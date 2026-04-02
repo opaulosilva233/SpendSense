@@ -20,8 +20,11 @@ class TransactionController extends Controller
             ->latest('date')
             ->paginate(15);
 
+        $categories = auth()->user()->categories()->get();
+
         return Inertia::render('Transactions/Index', [
             'transactions' => $transactions,
+            'categories' => $categories,
         ]);
     }
 

@@ -1,176 +1,181 @@
-import ApplicationLogo from '@/Components/ApplicationLogo';
 import Dropdown from '@/Components/Dropdown';
-import NavLink from '@/Components/NavLink';
-import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
 import { Link, usePage } from '@inertiajs/react';
-import { useState } from 'react';
 
 export default function AuthenticatedLayout({ header, children }) {
     const user = usePage().props.auth.user;
 
-    const [showingNavigationDropdown, setShowingNavigationDropdown] =
-        useState(false);
+    const navItems = [
+        {
+            name: 'Dashboard',
+            href: route('dashboard'),
+            active: route().current('dashboard'),
+            icon: (
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0a1 1 0 01-1-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 01-1 1h-2z" />
+                </svg>
+            ),
+        },
+        {
+            name: 'Transações',
+            href: route('transactions.index'),
+            active: route().current('transactions.*'),
+            icon: (
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
+                </svg>
+            ),
+        },
+        {
+            name: 'Categorias',
+            href: route('categories.index'),
+            active: route().current('categories.*'),
+            icon: (
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                </svg>
+            ),
+        },
+    ];
 
     return (
-        <div className="min-h-screen bg-gray-100">
-            <nav className="border-b border-gray-100 bg-white">
-                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                    <div className="flex h-16 justify-between">
-                        <div className="flex">
-                            <div className="flex shrink-0 items-center">
-                                <Link href="/">
-                                    <ApplicationLogo className="block h-9 w-auto fill-current text-gray-800" />
-                                </Link>
-                            </div>
-
-                            <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                                <NavLink
-                                    href={route('dashboard')}
-                                    active={route().current('dashboard')}
-                                >
-                                    Dashboard
-                                </NavLink>
-                            </div>
+        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-gray-50 to-slate-100">
+            {/* ── Desktop Sidebar (hidden on mobile) ── */}
+            <aside className="hidden md:fixed md:inset-y-0 md:left-0 md:flex md:w-64 md:flex-col">
+                <div className="flex flex-1 flex-col bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 shadow-2xl">
+                    {/* Logo / Brand */}
+                    <div className="flex h-20 items-center gap-3 px-6 border-b border-slate-700/50">
+                        <div className="flex items-center justify-center h-10 w-10 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-500 shadow-lg shadow-emerald-500/25">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
                         </div>
+                        <span className="text-xl font-bold bg-gradient-to-r from-emerald-400 to-teal-300 bg-clip-text text-transparent">
+                            SpendSense
+                        </span>
+                    </div>
 
-                        <div className="hidden sm:ms-6 sm:flex sm:items-center">
-                            <div className="relative ms-3">
-                                <Dropdown>
-                                    <Dropdown.Trigger>
-                                        <span className="inline-flex rounded-md">
-                                            <button
-                                                type="button"
-                                                className="inline-flex items-center rounded-md border border-transparent bg-white px-3 py-2 text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out hover:text-gray-700 focus:outline-none"
-                                            >
-                                                {user.name}
-
-                                                <svg
-                                                    className="-me-0.5 ms-2 h-4 w-4"
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    viewBox="0 0 20 20"
-                                                    fill="currentColor"
-                                                >
-                                                    <path
-                                                        fillRule="evenodd"
-                                                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                                        clipRule="evenodd"
-                                                    />
-                                                </svg>
-                                            </button>
-                                        </span>
-                                    </Dropdown.Trigger>
-
-                                    <Dropdown.Content>
-                                        <Dropdown.Link
-                                            href={route('profile.edit')}
-                                        >
-                                            Profile
-                                        </Dropdown.Link>
-                                        <Dropdown.Link
-                                            href={route('logout')}
-                                            method="post"
-                                            as="button"
-                                        >
-                                            Log Out
-                                        </Dropdown.Link>
-                                    </Dropdown.Content>
-                                </Dropdown>
-                            </div>
-                        </div>
-
-                        <div className="-me-2 flex items-center sm:hidden">
-                            <button
-                                onClick={() =>
-                                    setShowingNavigationDropdown(
-                                        (previousState) => !previousState,
-                                    )
-                                }
-                                className="inline-flex items-center justify-center rounded-md p-2 text-gray-400 transition duration-150 ease-in-out hover:bg-gray-100 hover:text-gray-500 focus:bg-gray-100 focus:text-gray-500 focus:outline-none"
+                    {/* Navigation Links */}
+                    <nav className="flex-1 px-4 py-6 space-y-2">
+                        {navItems.map((item) => (
+                            <Link
+                                key={item.name}
+                                href={item.href}
+                                className={`flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-all duration-200 group ${
+                                    item.active
+                                        ? 'bg-gradient-to-r from-emerald-500/20 to-teal-500/10 text-emerald-400 shadow-lg shadow-emerald-500/10 border border-emerald-500/20'
+                                        : 'text-slate-400 hover:bg-slate-700/50 hover:text-slate-200'
+                                }`}
                             >
-                                <svg
-                                    className="h-6 w-6"
-                                    stroke="currentColor"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                >
-                                    <path
-                                        className={
-                                            !showingNavigationDropdown
-                                                ? 'inline-flex'
-                                                : 'hidden'
-                                        }
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth="2"
-                                        d="M4 6h16M4 12h16M4 18h16"
-                                    />
-                                    <path
-                                        className={
-                                            showingNavigationDropdown
-                                                ? 'inline-flex'
-                                                : 'hidden'
-                                        }
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth="2"
-                                        d="M6 18L18 6M6 6l12 12"
-                                    />
-                                </svg>
-                            </button>
-                        </div>
+                                <span className={`transition-colors duration-200 ${item.active ? 'text-emerald-400' : 'text-slate-500 group-hover:text-slate-300'}`}>
+                                    {item.icon}
+                                </span>
+                                {item.name}
+                            </Link>
+                        ))}
+                    </nav>
+
+                    {/* User Dropdown (bottom of sidebar) */}
+                    <div className="border-t border-slate-700/50 p-4">
+                        <Dropdown>
+                            <Dropdown.Trigger>
+                                <button className="flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left transition-all duration-200 hover:bg-slate-700/50">
+                                    <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 text-sm font-bold text-white shadow-md">
+                                        {user.name.charAt(0).toUpperCase()}
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                        <p className="text-sm font-medium text-slate-200 truncate">{user.name}</p>
+                                        <p className="text-xs text-slate-500 truncate">{user.email}</p>
+                                    </div>
+                                    <svg className="h-4 w-4 text-slate-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+                                    </svg>
+                                </button>
+                            </Dropdown.Trigger>
+                            <Dropdown.Content>
+                                <Dropdown.Link href={route('profile.edit')}>
+                                    Perfil
+                                </Dropdown.Link>
+                                <Dropdown.Link href={route('logout')} method="post" as="button">
+                                    Terminar Sessão
+                                </Dropdown.Link>
+                            </Dropdown.Content>
+                        </Dropdown>
                     </div>
                 </div>
+            </aside>
 
-                <div
-                    className={
-                        (showingNavigationDropdown ? 'block' : 'hidden') +
-                        ' sm:hidden'
-                    }
-                >
-                    <div className="space-y-1 pb-3 pt-2">
-                        <ResponsiveNavLink
-                            href={route('dashboard')}
-                            active={route().current('dashboard')}
+            {/* ── Main Content Area ── */}
+            <div className="md:pl-64">
+                {/* Mobile Top Bar */}
+                <div className="sticky top-0 z-30 flex items-center justify-between bg-white/80 backdrop-blur-lg px-4 py-3 shadow-sm border-b border-slate-200/50 md:hidden">
+                    <div className="flex items-center gap-2">
+                        <div className="flex items-center justify-center h-8 w-8 rounded-lg bg-gradient-to-br from-emerald-400 to-teal-500 shadow-md">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <span className="text-lg font-bold bg-gradient-to-r from-emerald-500 to-teal-500 bg-clip-text text-transparent">
+                            SpendSense
+                        </span>
+                    </div>
+                    <Dropdown>
+                        <Dropdown.Trigger>
+                            <button className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 text-sm font-bold text-white shadow-md">
+                                {user.name.charAt(0).toUpperCase()}
+                            </button>
+                        </Dropdown.Trigger>
+                        <Dropdown.Content>
+                            <Dropdown.Link href={route('profile.edit')}>
+                                Perfil
+                            </Dropdown.Link>
+                            <Dropdown.Link href={route('logout')} method="post" as="button">
+                                Terminar Sessão
+                            </Dropdown.Link>
+                        </Dropdown.Content>
+                    </Dropdown>
+                </div>
+
+                {/* Page Header */}
+                {header && (
+                    <header className="bg-white/60 backdrop-blur-sm border-b border-slate-200/50">
+                        <div className="mx-auto max-w-7xl px-4 py-5 md:px-6 lg:px-8">
+                            {header}
+                        </div>
+                    </header>
+                )}
+
+                {/* Main Content */}
+                <main className="pb-24 md:pb-8">
+                    {children}
+                </main>
+            </div>
+
+            {/* ── Mobile Bottom Navigation Bar (visible only on mobile) ── */}
+            <nav className="fixed inset-x-0 bottom-0 z-40 bg-white/90 backdrop-blur-lg border-t border-slate-200/50 shadow-[0_-4px_20px_rgba(0,0,0,0.06)] md:hidden">
+                <div className="flex items-center justify-around px-2 py-2">
+                    {navItems.map((item) => (
+                        <Link
+                            key={item.name}
+                            href={item.href}
+                            className={`flex flex-col items-center gap-1 rounded-2xl px-4 py-2 transition-all duration-200 ${
+                                item.active
+                                    ? 'text-emerald-600'
+                                    : 'text-slate-400 active:text-slate-600'
+                            }`}
                         >
-                            Dashboard
-                        </ResponsiveNavLink>
-                    </div>
-
-                    <div className="border-t border-gray-200 pb-1 pt-4">
-                        <div className="px-4">
-                            <div className="text-base font-medium text-gray-800">
-                                {user.name}
-                            </div>
-                            <div className="text-sm font-medium text-gray-500">
-                                {user.email}
-                            </div>
-                        </div>
-
-                        <div className="mt-3 space-y-1">
-                            <ResponsiveNavLink href={route('profile.edit')}>
-                                Profile
-                            </ResponsiveNavLink>
-                            <ResponsiveNavLink
-                                method="post"
-                                href={route('logout')}
-                                as="button"
-                            >
-                                Log Out
-                            </ResponsiveNavLink>
-                        </div>
-                    </div>
+                            <span className={`transition-transform duration-200 ${item.active ? 'scale-110' : ''}`}>
+                                {item.icon}
+                            </span>
+                            <span className={`text-[11px] font-semibold ${item.active ? 'text-emerald-600' : 'text-slate-400'}`}>
+                                {item.name}
+                            </span>
+                            {item.active && (
+                                <span className="absolute -bottom-0 h-1 w-8 rounded-full bg-gradient-to-r from-emerald-400 to-teal-500" />
+                            )}
+                        </Link>
+                    ))}
                 </div>
             </nav>
-
-            {header && (
-                <header className="bg-white shadow">
-                    <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-                        {header}
-                    </div>
-                </header>
-            )}
-
-            <main>{children}</main>
         </div>
     );
 }
