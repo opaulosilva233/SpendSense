@@ -39,35 +39,39 @@ export default function AuthenticatedLayout({ header, children }) {
     ];
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-gray-50 to-slate-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+        <div className="min-h-screen bg-slate-50 dark:bg-slate-950 transition-colors duration-200 relative overflow-hidden font-sans">
+            {/* Ambient Background Glows */}
+            <div className="absolute top-0 inset-x-0 h-96 bg-gradient-to-b from-indigo-500/10 to-transparent dark:from-indigo-500/10 pointer-events-none" />
+            <div className="absolute -top-40 -left-40 w-96 h-96 bg-purple-500/20 dark:bg-purple-600/10 blur-[100px] rounded-full pointer-events-none" />
+
             {/* ── Desktop Sidebar (hidden on mobile) ── */}
-            <aside className="hidden md:fixed md:inset-y-0 md:left-0 md:flex md:w-64 md:flex-col z-40">
-                <div className="flex flex-1 flex-col bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 shadow-2xl border-r border-slate-800 dark:border-gray-800">
+            <aside className="hidden md:fixed md:inset-y-4 md:left-4 md:flex md:w-[260px] md:flex-col z-40">
+                <div className="flex flex-1 flex-col rounded-3xl bg-white/60 dark:bg-slate-900/40 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-none border border-white dark:border-white/5 backdrop-blur-2xl overflow-hidden">
                     {/* Logo / Brand */}
-                    <div className="flex h-20 items-center gap-3 px-6 border-b border-slate-700/50">
-                        <div className="flex items-center justify-center h-10 w-10 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-500 shadow-lg shadow-emerald-500/25">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <div className="flex h-24 items-center gap-4 px-8">
+                        <div className="flex items-center justify-center h-10 w-10 rounded-2xl bg-gradient-to-br from-violet-600 to-indigo-600 shadow-lg shadow-indigo-500/30 text-white">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
                         </div>
-                        <span className="text-xl font-bold bg-gradient-to-r from-emerald-400 to-teal-300 bg-clip-text text-transparent">
+                        <span className="text-xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-600 dark:from-white dark:to-slate-400 tracking-tight">
                             SpendSense
                         </span>
                     </div>
 
                     {/* Navigation Links */}
-                    <nav className="flex-1 px-4 py-6 space-y-2">
+                    <nav className="flex-1 px-4 py-8 space-y-2.5">
                         {navItems.map((item) => (
                             <Link
                                 key={item.name}
                                 href={item.href}
-                                className={`flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-all duration-200 group ${
+                                className={`flex items-center gap-3.5 rounded-xl px-4 py-3 text-[15px] font-semibold transition-all duration-300 group ${
                                     item.active
-                                        ? 'bg-gradient-to-r from-emerald-500/20 to-teal-500/10 text-emerald-400 shadow-lg shadow-emerald-500/10 border border-emerald-500/20'
-                                        : 'text-slate-400 hover:bg-slate-700/50 hover:text-slate-200'
+                                        ? 'bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-md shadow-indigo-500/20 scale-[1.02]'
+                                        : 'text-slate-500 dark:text-slate-400 hover:bg-white/60 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white'
                                 }`}
                             >
-                                <span className={`transition-colors duration-200 ${item.active ? 'text-emerald-400' : 'text-slate-500 group-hover:text-slate-300'}`}>
+                                <span className={`transition-colors duration-300 ${item.active ? 'text-white' : 'text-slate-400 group-hover:text-indigo-500 dark:group-hover:text-indigo-400'}`}>
                                     {item.icon}
                                 </span>
                                 {item.name}
@@ -76,64 +80,64 @@ export default function AuthenticatedLayout({ header, children }) {
                     </nav>
 
                     {/* User Dropdown (bottom of sidebar) */}
-                    <div className="border-t border-slate-700/50 dark:border-gray-800 p-4 flex items-center justify-between">
+                    <div className="border-t border-slate-200/50 dark:border-white/10 p-4 flex items-center justify-between bg-white/20 dark:bg-slate-950/20 backdrop-blur-md">
                         <div className="flex-1 min-w-0 pr-2">
                             <Dropdown>
                                 <Dropdown.Trigger>
-                                    <button className="flex w-full items-center gap-3 rounded-xl px-2 py-2 text-left transition-all duration-200 hover:bg-slate-700/50 dark:hover:bg-gray-800/50">
-                                        <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 text-sm font-bold text-white shadow-md">
+                                    <button className="flex w-full items-center gap-3 rounded-xl px-2 py-2 text-left transition-all duration-200 hover:bg-white/50 dark:hover:bg-white/5">
+                                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-400 to-teal-500 text-sm font-bold text-white shadow-sm">
                                             {user.name.charAt(0).toUpperCase()}
                                         </div>
                                         <div className="flex-1 min-w-0">
-                                            <p className="text-sm font-medium text-slate-200 truncate">{user.name}</p>
-                                            <p className="text-xs text-slate-500 dark:text-gray-400 truncate">{user.email}</p>
+                                            <p className="text-[15px] font-bold text-slate-900 dark:text-white truncate">{user.name}</p>
+                                            <p className="text-xs font-medium text-slate-500 dark:text-slate-400 truncate">{user.email}</p>
                                         </div>
                                     </button>
                                 </Dropdown.Trigger>
-                                <Dropdown.Content align="bottom-left" contentClasses="py-1 bg-white dark:bg-gray-800">
-                                    <Dropdown.Link href={route('profile.edit')}>
+                                <Dropdown.Content align="bottom-left" contentClasses="py-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-xl">
+                                    <Dropdown.Link href={route('profile.edit')} className="hover:bg-slate-50 dark:hover:bg-slate-800 font-medium">
                                         Perfil
                                     </Dropdown.Link>
-                                    <Dropdown.Link href={route('logout')} method="post" as="button">
+                                    <Dropdown.Link href={route('logout')} method="post" as="button" className="hover:bg-slate-50 dark:hover:bg-slate-800 font-medium">
                                         Terminar Sessão
                                     </Dropdown.Link>
                                 </Dropdown.Content>
                             </Dropdown>
                         </div>
-                        <DarkModeToggle className="shrink-0 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white" />
+                        <DarkModeToggle className="shrink-0 p-2 rounded-xl text-slate-500 bg-white/50 hover:bg-white hover:text-slate-900 dark:bg-white/5 dark:text-slate-400 dark:hover:bg-white/10 dark:hover:text-white transition-all" />
                     </div>
                 </div>
             </aside>
 
             {/* ── Main Content Area ── */}
-            <div className="md:pl-64">
+            <div className="md:pl-[280px]">
                 {/* Mobile Top Bar */}
-                <div className="sticky top-0 z-30 flex items-center justify-between bg-white/80 dark:bg-gray-900/80 backdrop-blur-lg px-4 py-3 shadow-sm border-b border-slate-200/50 dark:border-gray-800 md:hidden">
-                    <div className="flex items-center gap-2">
-                        <div className="flex items-center justify-center h-8 w-8 rounded-lg bg-gradient-to-br from-emerald-400 to-teal-500 shadow-md">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <div className="sticky top-0 z-30 flex items-center justify-between bg-white/70 dark:bg-slate-900/60 backdrop-blur-2xl px-5 py-4 border-b border-white/20 dark:border-white/10 md:hidden">
+                    <div className="flex items-center gap-3">
+                        <div className="flex items-center justify-center h-10 w-10 rounded-xl bg-gradient-to-br from-violet-600 to-indigo-600 shadow-md shadow-indigo-500/20 text-white">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
                         </div>
-                        <span className="text-lg font-bold bg-gradient-to-r from-emerald-500 to-teal-500 dark:from-emerald-400 dark:to-teal-400 bg-clip-text text-transparent">
+                        <span className="text-xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-600 dark:from-white dark:to-slate-400 tracking-tight">
                             SpendSense
                         </span>
                     </div>
                     
-                    <div className="flex items-center gap-2">
-                        <DarkModeToggle className="dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white border border-slate-200 dark:border-gray-700" />
+                    <div className="flex items-center gap-4">
+                        <DarkModeToggle className="text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white" />
                         
                         <Dropdown>
                             <Dropdown.Trigger>
-                                <button className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 text-sm font-bold text-white shadow-md">
+                                <button className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-400 to-teal-500 text-[15px] font-bold text-white shadow-sm hover:opacity-90">
                                     {user.name.charAt(0).toUpperCase()}
                                 </button>
                             </Dropdown.Trigger>
-                            <Dropdown.Content contentClasses="py-1 bg-white dark:bg-gray-800 shadow-xl border border-slate-100 dark:border-gray-700">
-                                <Dropdown.Link href={route('profile.edit')}>
+                            <Dropdown.Content contentClasses="py-1 bg-white dark:bg-slate-900 border dark:border-slate-800 rounded-xl">
+                                <Dropdown.Link href={route('profile.edit')} className="hover:bg-slate-50 dark:hover:bg-slate-800 font-medium">
                                     Perfil
                                 </Dropdown.Link>
-                                <Dropdown.Link href={route('logout')} method="post" as="button">
+                                <Dropdown.Link href={route('logout')} method="post" as="button" className="hover:bg-slate-50 dark:hover:bg-slate-800 font-medium">
                                     Terminar Sessão
                                 </Dropdown.Link>
                             </Dropdown.Content>
@@ -143,9 +147,9 @@ export default function AuthenticatedLayout({ header, children }) {
 
                 {/* Page Header */}
                 {header && (
-                    <header className="bg-white/60 dark:bg-gray-900/60 backdrop-blur-sm border-b border-slate-200/50 dark:border-gray-800">
+                    <header className="bg-transparent mb-2">
                         <div className="mx-auto max-w-7xl px-4 py-5 md:px-6 lg:px-8">
-                            <div className="*:text-slate-800 dark:*:text-white">
+                            <div className="*:text-zinc-900 dark:*:text-zinc-100">
                                 {header}
                             </div>
                         </div>
@@ -159,27 +163,24 @@ export default function AuthenticatedLayout({ header, children }) {
             </div>
 
             {/* ── Mobile Bottom Navigation Bar (visible only on mobile) ── */}
-            <nav className="fixed inset-x-0 bottom-0 z-40 bg-white/90 dark:bg-gray-900/90 backdrop-blur-lg border-t border-slate-200/50 dark:border-gray-800 shadow-[0_-4px_20px_rgba(0,0,0,0.06)] dark:shadow-[0_-4px_20px_rgba(0,0,0,0.5)] md:hidden">
-                <div className="flex items-center justify-around px-2 py-2">
+            <nav className="fixed inset-x-0 bottom-0 z-40 bg-white/80 dark:bg-slate-900/80 backdrop-blur-2xl border-t border-slate-200/50 dark:border-white/10 md:hidden">
+                <div className="flex items-center justify-around px-2 py-3">
                     {navItems.map((item) => (
                         <Link
                             key={item.name}
                             href={item.href}
-                            className={`flex flex-col items-center gap-1 rounded-2xl px-4 py-2 transition-all duration-200 relative ${
+                            className={`flex flex-col items-center gap-1 rounded-xl px-4 py-2 transition-all duration-300 relative ${
                                 item.active
-                                    ? 'text-emerald-600 dark:text-emerald-400'
-                                    : 'text-slate-400 dark:text-gray-500 active:text-slate-600 dark:active:text-gray-300'
+                                    ? 'text-indigo-600 dark:text-indigo-400'
+                                    : 'text-slate-500 dark:text-slate-400'
                             }`}
                         >
-                            <span className={`transition-transform duration-200 ${item.active ? 'scale-110' : ''}`}>
+                            <span className={`transition-transform duration-300 ${item.active ? 'scale-110' : ''}`}>
                                 {item.icon}
                             </span>
-                            <span className={`text-[11px] font-semibold ${item.active ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400 dark:text-gray-500'}`}>
+                            <span className="text-[11px] font-bold tracking-wide">
                                 {item.name}
                             </span>
-                            {item.active && (
-                                <span className="absolute -bottom-0 h-1 w-8 rounded-full bg-gradient-to-r from-emerald-400 to-teal-500" />
-                            )}
                         </Link>
                     ))}
                 </div>
