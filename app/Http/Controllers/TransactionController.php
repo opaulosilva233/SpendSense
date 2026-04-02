@@ -6,25 +6,94 @@ use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class TransactionController extends Controller
 {
     /**
      * Display a listing of the transactions.
+     * Supports filters: category_id, date_from, date_to.
      */
-    public function index(): Response
+    public function index(Request $request): Response
     {
-        $transactions = auth()->user()
+        $query = auth()->user()
             ->transactions()
             ->with('category')
-            ->latest('date')
-            ->paginate(15);
+            ->latest('date');
+
+        // Apply filters
+        if ($request->filled('category_id')) {
+            $query->where('category_id', $request->input('category_id'));
+        }
+
+        if ($request->filled('date_from')) {
+            $query->whereDate('date', '>=', $request->input('date_from'));
+        }
+
+        if ($request->filled('date_to')) {
+            $query->whereDate('date', '<=', $request->input('date_to'));
+        }
+
+        $transactions = $query->paginate(15)->withQueryString();
 
         $categories = auth()->user()->categories()->get();
 
         return Inertia::render('Transactions/Index', [
             'transactions' => $transactions,
             'categories' => $categories,
+            'filters' => $request->only(['category_id', 'date_from', 'date_to']),
+        ]);
+    }
+
+    /**
+     * Export the user's transactions to a CSV file.
+     * Supports the same filters as the index method.
+     */
+    public function downloadCsv(Request $request): StreamedResponse
+    {
+        $query = auth()->user()
+            ->transactions()
+            ->with('category')
+            ->latest('date');
+
+        // Apply the same filters as index
+        if ($request->filled('category_id')) {
+            $query->where('category_id', $request->input('category_id'));
+        }
+
+        if ($request->filled('date_from')) {
+            $query->whereDate('date', '>=', $request->input('date_from'));
+        }
+
+        if ($request->filled('date_to')) {
+            $query->whereDate('date', '<=', $request->input('date_to'));
+        }
+
+        $transactions = $query->get();
+
+        $filename = 'transactions_' . now()->format('Y-m-d') . '.csv';
+
+        return response()->streamDownload(function () use ($transactions) {
+            $handle = fopen('php://output', 'w');
+
+            // CSV header
+            fputcsv($handle, ['ID', 'Date', 'Type', 'Category', 'Description', 'Amount']);
+
+            // CSV rows
+            foreach ($transactions as $transaction) {
+                fputcsv($handle, [
+                    $transaction->id,
+                    $transaction->date->format('Y-m-d'),
+                    $transaction->type,
+                    $transaction->category->name ?? '',
+                    $transaction->description ?? '',
+                    $transaction->amount,
+                ]);
+            }
+
+            fclose($handle);
+        }, $filename, [
+            'Content-Type' => 'text/csv',
         ]);
     }
 

@@ -3,10 +3,10 @@ import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
 import TextInput from '@/Components/TextInput';
 import Modal from '@/Components/Modal';
-import { Head, useForm, Link } from '@inertiajs/react';
+import { Head, useForm, Link, router } from '@inertiajs/react';
 import { useState } from 'react';
 
-export default function Index({ transactions, categories }) {
+export default function Index({ transactions, categories, filters = {} }) {
     const [showModal, setShowModal] = useState(false);
 
     const today = new Date().toISOString().split('T')[0];
@@ -18,6 +18,42 @@ export default function Index({ transactions, categories }) {
         date: today,
         description: '',
     });
+
+    const { data: filterData, setData: setFilterData, get, processing: filterProcessing } = useForm({
+        category_id: filters.category_id || '',
+        date_from: filters.date_from || '',
+        date_to: filters.date_to || '',
+    });
+
+    const applyFilters = (e) => {
+        e.preventDefault();
+        get(route('transactions.index'), {
+            preserveState: true,
+            preserveScroll: true,
+        });
+    };
+
+    const clearFilters = () => {
+        setFilterData({
+            category_id: '',
+            date_from: '',
+            date_to: '',
+        });
+        router.get(route('transactions.index'), {}, {
+            preserveState: true,
+            preserveScroll: true,
+        });
+    };
+
+    const exportCsv = () => {
+        // Construct the query string from applied filters
+        const query = new URLSearchParams();
+        if (filterData.category_id) query.append('category_id', filterData.category_id);
+        if (filterData.date_from) query.append('date_from', filterData.date_from);
+        if (filterData.date_to) query.append('date_to', filterData.date_to);
+        
+        window.location.href = `${route('transactions.csv')}?${query.toString()}`;
+    };
 
     const openModal = () => {
         reset();
@@ -66,22 +102,93 @@ export default function Index({ transactions, categories }) {
         <AuthenticatedLayout
             header={
                 <div className="flex items-center justify-between">
-                    <h2 className="text-xl font-bold text-slate-800">Transações</h2>
+                    <h2 className="text-xl font-bold text-slate-800 dark:text-white">Transações</h2>
                 </div>
             }
         >
             <Head title="Transações" />
 
-            <div className="mx-auto max-w-7xl px-4 py-6 md:px-6 lg:px-8">
+            <div className="mx-auto max-w-7xl px-4 py-6 md:px-6 lg:px-8 space-y-6">
+                
+                {/* ── Filters & Actions ── */}
+                <div className="rounded-2xl bg-white dark:bg-gray-800 p-4 shadow-md shadow-slate-200/50 dark:shadow-gray-900/50 border border-slate-100 dark:border-gray-700 flex flex-col md:flex-row gap-4 justify-between items-start md:items-end">
+                    <form onSubmit={applyFilters} className="flex flex-col sm:flex-row gap-3 w-full md:w-auto flex-wrap">
+                        <div>
+                            <InputLabel htmlFor="filter-category" value="Categoria" className="dark:text-gray-300" />
+                            <select
+                                id="filter-category"
+                                value={filterData.category_id}
+                                onChange={(e) => setFilterData('category_id', e.target.value)}
+                                className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-emerald-500 focus:ring-emerald-500 text-sm"
+                            >
+                                <option value="">Todas</option>
+                                {categories && categories.map((category) => (
+                                    <option key={category.id} value={category.id}>
+                                        {category.name} ({category.type === 'income' ? 'Receita' : 'Despesa'})
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                        <div>
+                            <InputLabel htmlFor="filter-date-from" value="Data Inicial" className="dark:text-gray-300" />
+                            <TextInput
+                                id="filter-date-from"
+                                type="date"
+                                value={filterData.date_from}
+                                onChange={(e) => setFilterData('date_from', e.target.value)}
+                                className="mt-1 block w-full text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                            />
+                        </div>
+                        <div>
+                            <InputLabel htmlFor="filter-date-to" value="Data Final" className="dark:text-gray-300" />
+                            <TextInput
+                                id="filter-date-to"
+                                type="date"
+                                value={filterData.date_to}
+                                onChange={(e) => setFilterData('date_to', e.target.value)}
+                                className="mt-1 block w-full text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                            />
+                        </div>
+                        <div className="flex items-end gap-2">
+                            <button
+                                type="submit"
+                                disabled={filterProcessing}
+                                className="h-[38px] px-4 rounded-md bg-slate-800 dark:bg-gray-600 text-white text-sm font-medium hover:bg-slate-700 dark:hover:bg-gray-500 transition-colors"
+                            >
+                                Filtrar
+                            </button>
+                            {(filterData.category_id || filterData.date_from || filterData.date_to) && (
+                                <button
+                                    type="button"
+                                    onClick={clearFilters}
+                                    className="h-[38px] px-4 rounded-md bg-slate-100 dark:bg-gray-700 text-slate-600 dark:text-gray-300 text-sm font-medium hover:bg-slate-200 dark:hover:bg-gray-600 transition-colors"
+                                >
+                                    Limpar
+                                </button>
+                            )}
+                        </div>
+                    </form>
+
+                    <button
+                        onClick={exportCsv}
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-sm font-semibold rounded-md border border-emerald-200 dark:border-emerald-500/20 hover:bg-emerald-100 dark:hover:bg-emerald-500/20 transition-colors"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                        </svg>
+                        Exportar CSV
+                    </button>
+                </div>
+
                 {/* ── Transactions List ── */}
-                <div className="rounded-2xl bg-white shadow-md shadow-slate-200/50 border border-slate-100 overflow-hidden">
+                <div className="rounded-2xl bg-white dark:bg-gray-800 shadow-md shadow-slate-200/50 dark:shadow-gray-900/50 border border-slate-100 dark:border-gray-700 overflow-hidden">
                     {transactionList.length > 0 ? (
                         <>
-                            <ul className="divide-y divide-slate-100">
+                            <ul className="divide-y divide-slate-100 dark:divide-gray-700">
                                 {transactionList.map((transaction) => (
                                     <li
                                         key={transaction.id}
-                                        className="flex items-center justify-between px-4 py-4 md:px-6 transition-colors duration-150 hover:bg-slate-50/80"
+                                        className="flex items-center justify-between px-4 py-4 md:px-6 transition-colors duration-150 hover:bg-slate-50/80 dark:hover:bg-gray-700/50"
                                     >
                                         <div className="flex items-center gap-3 min-w-0">
                                             {/* Type indicator */}
@@ -102,17 +209,17 @@ export default function Index({ transactions, categories }) {
                                             </div>
 
                                             <div className="min-w-0">
-                                                <p className="text-sm font-semibold text-slate-800 truncate">
+                                                <p className="text-sm font-semibold text-slate-800 dark:text-gray-200 truncate">
                                                     {transaction.description || 'Sem descrição'}
                                                 </p>
                                                 <div className="flex items-center gap-2 mt-0.5">
-                                                    <span className="text-xs text-slate-400">
+                                                    <span className="text-xs text-slate-400 dark:text-gray-500">
                                                         {formatDate(transaction.date)}
                                                     </span>
                                                     {transaction.category && (
                                                         <>
-                                                            <span className="text-xs text-slate-300">•</span>
-                                                            <span className="text-xs font-medium text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">
+                                                            <span className="text-xs text-slate-300 dark:text-gray-600">•</span>
+                                                            <span className="text-xs font-medium text-slate-500 dark:text-gray-400 bg-slate-100 dark:bg-gray-700 px-2 py-0.5 rounded-full">
                                                                 {transaction.category.name}
                                                             </span>
                                                         </>
@@ -135,7 +242,7 @@ export default function Index({ transactions, categories }) {
 
                             {/* Pagination */}
                             {paginationLinks.length > 3 && (
-                                <div className="flex items-center justify-center gap-1 border-t border-slate-100 px-4 py-4">
+                                <div className="flex flex-wrap items-center justify-center gap-1 border-t border-slate-100 dark:border-gray-700 px-4 py-4">
                                     {paginationLinks.map((link, index) => (
                                         <Link
                                             key={index}
@@ -145,8 +252,8 @@ export default function Index({ transactions, categories }) {
                                                 link.active
                                                     ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-md shadow-emerald-500/20'
                                                     : link.url
-                                                        ? 'text-slate-500 hover:bg-slate-100 hover:text-slate-700'
-                                                        : 'cursor-not-allowed text-slate-300'
+                                                        ? 'text-slate-500 dark:text-gray-400 hover:bg-slate-100 dark:hover:bg-gray-700 hover:text-slate-700 dark:hover:text-white'
+                                                        : 'cursor-not-allowed text-slate-300 dark:text-gray-600'
                                             }`}
                                             dangerouslySetInnerHTML={{ __html: link.label }}
                                         />
@@ -155,12 +262,12 @@ export default function Index({ transactions, categories }) {
                             )}
                         </>
                     ) : (
-                        <div className="flex flex-col items-center justify-center py-16 text-slate-400">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mb-4 text-slate-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}>
+                        <div className="flex flex-col items-center justify-center py-16 text-slate-400 dark:text-gray-500">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mb-4 text-slate-200 dark:text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
                             </svg>
-                            <p className="text-base font-medium text-slate-500">Sem transações registadas</p>
-                            <p className="mt-1 text-sm text-slate-400">Clica no botão abaixo para adicionares a primeira.</p>
+                            <p className="text-base font-medium text-slate-500 dark:text-gray-400">Sem transações registadas</p>
+                            <p className="mt-1 text-sm text-slate-400 dark:text-gray-500">Clica no botão abaixo para adicionares a primeira transação.</p>
                         </div>
                     )}
                 </div>
@@ -180,8 +287,8 @@ export default function Index({ transactions, categories }) {
 
             {/* ── Create Transaction Modal ── */}
             <Modal show={showModal} onClose={closeModal} maxWidth="md">
-                <form onSubmit={submit} className="p-6">
-                    <h3 className="text-lg font-bold text-slate-800 mb-6">Nova Transação</h3>
+                <form onSubmit={submit} className="p-6 dark:bg-gray-800">
+                    <h3 className="text-lg font-bold text-slate-800 dark:text-white mb-6">Nova Transação</h3>
 
                     <div className="space-y-5">
                         {/* Type Selection */}
@@ -197,7 +304,7 @@ export default function Index({ transactions, categories }) {
                                     className={`flex items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold transition-all duration-200 border-2 ${
                                         data.type === 'expense'
                                             ? 'border-rose-500 bg-rose-50 text-rose-600 shadow-md shadow-rose-500/10'
-                                            : 'border-slate-200 bg-white text-slate-500 hover:border-slate-300'
+                                            : 'border-slate-200 bg-white text-slate-500 hover:border-slate-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:hover:border-gray-500'
                                     }`}
                                 >
                                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -214,7 +321,7 @@ export default function Index({ transactions, categories }) {
                                     className={`flex items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold transition-all duration-200 border-2 ${
                                         data.type === 'income'
                                             ? 'border-emerald-500 bg-emerald-50 text-emerald-600 shadow-md shadow-emerald-500/10'
-                                            : 'border-slate-200 bg-white text-slate-500 hover:border-slate-300'
+                                            : 'border-slate-200 bg-white text-slate-500 hover:border-slate-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:hover:border-gray-500'
                                     }`}
                                 >
                                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -250,7 +357,7 @@ export default function Index({ transactions, categories }) {
                                 id="transaction-category"
                                 value={data.category_id}
                                 onChange={(e) => setData('category_id', e.target.value)}
-                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                             >
                                 <option value="">Selecionar categoria...</option>
                                 {filteredCategories.map((category) => (
@@ -302,7 +409,7 @@ export default function Index({ transactions, categories }) {
                         <button
                             type="button"
                             onClick={closeModal}
-                            className="rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-500 hover:text-slate-700 transition-colors"
+                            className="rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-500 hover:text-slate-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors"
                         >
                             Cancelar
                         </button>
