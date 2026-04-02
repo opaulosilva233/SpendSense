@@ -1,8 +1,8 @@
-# 💰 Tusto (Personal Finance Tracker)
+# 💰 SpendSense (Personal Finance Tracker)
 
 > Your personal finance manager, built for speed, privacy, and optimized for mobile.
 
-**Tusto** is a web application designed to help you track expenses, monitor income, and visualize your cash flow simply and directly. It is a self-hosted project intended strictly for personal use.
+**SpendSense** is a web application designed to help you track expenses, monitor income, and visualize your cash flow simply and directly. It is a self-hosted project intended strictly for personal use.
 
 ## 🛠️ Tech Stack
 
