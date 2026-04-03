@@ -3,11 +3,13 @@ import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
 import TextInput from '@/Components/TextInput';
 import Modal from '@/Components/Modal';
+import InvoiceQRScanner from '@/Components/InvoiceQRScanner';
 import { Head, useForm, Link, router } from '@inertiajs/react';
 import { useState } from 'react';
 
-export default function Index({ transactions, categories, filters = {} }) {
+export default function Index({ transactions, categories, wallets, tags, filters = {} }) {
     const [showModal, setShowModal] = useState(false);
+    const [showQRScanner, setShowQRScanner] = useState(false);
 
     const today = new Date().toISOString().split('T')[0];
 
@@ -15,8 +17,12 @@ export default function Index({ transactions, categories, filters = {} }) {
         amount: '',
         type: 'expense',
         category_id: '',
+        wallet_id: '',
         date: today,
         description: '',
+        tags: [],
+        receipt: null,
+        qr_code_data: '',
     });
 
     const { data: filterData, setData: setFilterData, get, processing: filterProcessing } = useForm({
@@ -59,6 +65,36 @@ export default function Index({ transactions, categories, filters = {} }) {
         reset();
         setData('date', today);
         setShowModal(true);
+    };
+
+    const handleQRScan = (scannedData) => {
+        // PT AT QR Code format values are separated by *
+        // F:YYYYMMDD (Date) -> 20240403
+        // N:123.45 or O:123.45 (Total amounts with taxes)
+        const parts = scannedData.split('*');
+        let extractedDate = today;
+        let extractedAmount = '';
+
+        parts.forEach((part) => {
+            if (part.startsWith('F:')) {
+                const dateStr = part.replace('F:', '');
+                if (dateStr.length === 8) {
+                    extractedDate = `${dateStr.substring(0,4)}-${dateStr.substring(4,6)}-${dateStr.substring(6,8)}`;
+                }
+            } else if (part.startsWith('N:')) {
+                extractedAmount = part.replace('N:', '');
+            } else if (part.startsWith('O:') && !extractedAmount) {
+                extractedAmount = part.replace('O:', '');
+            }
+        });
+
+        setData((prevData) => ({
+            ...prevData,
+            date: extractedDate,
+            amount: extractedAmount || prevData.amount,
+            qr_code_data: scannedData,
+            type: 'expense', // Normally it's an expense
+        }));
     };
 
     const closeModal = () => {
@@ -281,7 +317,19 @@ export default function Index({ transactions, categories, filters = {} }) {
             {/* ── Create Transaction Modal ── */}
             <Modal show={showModal} onClose={closeModal} maxWidth="md">
                 <form onSubmit={submit} className="p-6 dark:bg-[#0a0a0a]">
-                    <h3 className="text-lg font-semibold text-zinc-900 dark:text-white mb-6">Nova Transação</h3>
+                    <div className="flex items-center justify-between mb-6">
+                        <h3 className="text-lg font-semibold text-zinc-900 dark:text-white">Nova Transação</h3>
+                        <button
+                            type="button"
+                            onClick={() => setShowQRScanner(true)}
+                            className="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-semibold rounded-lg bg-emerald-50 text-emerald-600 hover:bg-emerald-100 dark:bg-emerald-900/20 dark:text-emerald-400 dark:hover:bg-emerald-900/40 transition-colors"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm14 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
+                            </svg>
+                            Ler QR Code (Fatura)
+                        </button>
+                    </div>
 
                     <div className="space-y-4">
                         {/* Type Selection */}
@@ -370,6 +418,48 @@ export default function Index({ transactions, categories, filters = {} }) {
                             <InputError message={errors.category_id} className="mt-2" />
                         </div>
 
+                        {/* Wallet */}
+                        <div>
+                            <InputLabel htmlFor="transaction-wallet" value="Carteira / Conta" />
+                            <select
+                                id="transaction-wallet"
+                                value={data.wallet_id}
+                                onChange={(e) => setData('wallet_id', e.target.value)}
+                                className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                            >
+                                <option value="">Nenhuma</option>
+                                {wallets && wallets.map((wallet) => (
+                                    <option key={wallet.id} value={wallet.id}>
+                                        {wallet.name}
+                                    </option>
+                                ))}
+                            </select>
+                            <InputError message={errors.wallet_id} className="mt-2" />
+                        </div>
+
+                        {/* Tags */}
+                        <div>
+                            <InputLabel htmlFor="transaction-tags" value="Tags (Múltiplas Escolhas)" />
+                            <select
+                                id="transaction-tags"
+                                multiple
+                                value={data.tags}
+                                onChange={(e) => {
+                                    const options = Array.from(e.target.options);
+                                    setData('tags', options.filter(o => o.selected).map(o => o.value));
+                                }}
+                                className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 min-h-[80px]"
+                            >
+                                {tags && tags.map((tag) => (
+                                    <option key={tag.id} value={tag.id}>
+                                        {tag.name}
+                                    </option>
+                                ))}
+                            </select>
+                            <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">Pressione Ctrl/Cmd para selecionar várias tags.</p>
+                            <InputError message={errors.tags} className="mt-2" />
+                        </div>
+
                         {/* Date */}
                         <div>
                             <InputLabel htmlFor="transaction-date" value="Data" />
@@ -394,6 +484,25 @@ export default function Index({ transactions, categories, filters = {} }) {
                                 placeholder="Ex: Almoço, Supermercado..."
                             />
                             <InputError message={errors.description} className="mt-2" />
+                        </div>
+
+                        {/* File Upload (Receipt) */}
+                        <div>
+                            <InputLabel htmlFor="transaction-receipt" value="Anexar Fatura/Recibo (opcional)" />
+                            <input
+                                id="transaction-receipt"
+                                type="file"
+                                accept="image/jpeg,image/png,application/pdf"
+                                onChange={(e) => setData('receipt', e.target.files[0])}
+                                className="mt-1 block w-full text-sm text-slate-500 dark:text-slate-400
+                                  file:mr-4 file:py-2 file:px-4
+                                  file:rounded-lg file:border-0
+                                  file:text-sm file:font-semibold
+                                  file:bg-indigo-50 file:text-indigo-700
+                                  hover:file:bg-indigo-100
+                                  dark:file:bg-indigo-900/30 dark:file:text-indigo-400 dark:hover:file:bg-indigo-900/50"
+                            />
+                            <InputError message={errors.receipt} className="mt-2" />
                         </div>
                     </div>
 
@@ -423,6 +532,11 @@ export default function Index({ transactions, categories, filters = {} }) {
                     </div>
                 </form>
             </Modal>
+            <InvoiceQRScanner
+                show={showQRScanner}
+                onClose={() => setShowQRScanner(false)}
+                onScan={handleQRScan}
+            />
         </AuthenticatedLayout>
     );
 }

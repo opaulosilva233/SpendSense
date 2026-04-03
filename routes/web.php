@@ -101,6 +101,13 @@ Route::middleware('auth')->group(function () {
     Route::resource('categories', CategoryController::class);
     Route::resource('transactions', TransactionController::class);
     Route::get('transactions-export/csv', [TransactionController::class, 'downloadCsv'])->name('transactions.csv');
+
+    Route::resource('wallets', \App\Http\Controllers\WalletController::class)->only(['index', 'store', 'update', 'destroy']);
+    Route::resource('tags', \App\Http\Controllers\TagController::class)->only(['index', 'store', 'update', 'destroy']);
+    Route::resource('budgets', \App\Http\Controllers\BudgetController::class)->only(['index', 'store', 'update', 'destroy']);
+
+    // Placeholders for remaining features to avoid route() errors
+    Route::get('/goals', function () { return Inertia::render('Dashboard'); })->name('goals.index');
 });
 
 require __DIR__.'/auth.php';

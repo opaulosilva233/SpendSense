@@ -37,10 +37,14 @@ class TransactionController extends Controller
         $transactions = $query->paginate(15)->withQueryString();
 
         $categories = auth()->user()->categories()->get();
+        $wallets = auth()->user()->wallets()->get();
+        $tags = auth()->user()->tags()->get();
 
         return Inertia::render('Transactions/Index', [
             'transactions' => $transactions,
             'categories' => $categories,
+            'wallets' => $wallets,
+            'tags' => $tags,
             'filters' => $request->only(['category_id', 'date_from', 'date_to']),
         ]);
     }
@@ -116,16 +120,37 @@ class TransactionController extends Controller
     {
         $validated = $request->validate([
             'category_id' => 'required|exists:categories,id',
+            'wallet_id' => 'nullable|exists:wallets,id',
             'type' => 'required|string|in:income,expense',
             'amount' => 'required|numeric|min:0.01',
             'description' => 'nullable|string|max:255',
             'date' => 'required|date',
+            'qr_code_data' => 'nullable|string',
+            'tags' => 'nullable|array',
+            'tags.*' => 'exists:tags,id',
+            'receipt' => 'nullable|file|mimes:jpeg,png,pdf|max:5120',
         ]);
 
         // Ensure the category belongs to the user
         $category = auth()->user()->categories()->findOrFail($validated['category_id']);
 
-        auth()->user()->transactions()->create($validated);
+        if (!empty($validated['wallet_id'])) {
+            auth()->user()->wallets()->findOrFail($validated['wallet_id']);
+        }
+
+        $data = collect($validated)->except(['tags', 'receipt'])->toArray();
+
+        if ($request->hasFile('receipt')) {
+            $data['receipt_path'] = $request->file('receipt')->store('receipts', 'public');
+        }
+
+        $transaction = auth()->user()->transactions()->create($data);
+
+        if (!empty($validated['tags'])) {
+            // Ensure all tags belong to user
+            $userTags = auth()->user()->tags()->whereIn('id', $validated['tags'])->pluck('id');
+            $transaction->tags()->sync($userTags);
+        }
 
         return redirect()->route('transactions.index');
     }
