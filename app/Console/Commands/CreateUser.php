@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
 use App\Models\User;
+use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
@@ -46,6 +46,7 @@ class CreateUser extends Command
             foreach ($validator->errors()->all() as $error) {
                 $this->error($error);
             }
+
             return 1;
         }
 
@@ -56,6 +57,7 @@ class CreateUser extends Command
         ]);
 
         $this->info("Usuário criado: ID {$user->id} — {$user->email}");
+
         return 0;
     }
 }

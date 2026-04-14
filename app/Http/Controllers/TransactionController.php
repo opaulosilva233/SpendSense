@@ -75,7 +75,7 @@ class TransactionController extends Controller
 
         $transactions = $query->get();
 
-        $filename = 'transactions_' . now()->format('Y-m-d') . '.csv';
+        $filename = 'transactions_'.now()->format('Y-m-d').'.csv';
 
         return response()->streamDownload(function () use ($transactions) {
             $handle = fopen('php://output', 'w');
@@ -134,7 +134,7 @@ class TransactionController extends Controller
         // Ensure the category belongs to the user
         $category = auth()->user()->categories()->findOrFail($validated['category_id']);
 
-        if (!empty($validated['wallet_id'])) {
+        if (! empty($validated['wallet_id'])) {
             auth()->user()->wallets()->findOrFail($validated['wallet_id']);
         }
 
@@ -146,7 +146,7 @@ class TransactionController extends Controller
 
         $transaction = auth()->user()->transactions()->create($data);
 
-        if (!empty($validated['tags'])) {
+        if (! empty($validated['tags'])) {
             // Ensure all tags belong to user
             $userTags = auth()->user()->tags()->whereIn('id', $validated['tags'])->pluck('id');
             $transaction->tags()->sync($userTags);
