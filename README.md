@@ -2,7 +2,7 @@
 
 > Your personal finance manager, built for speed, privacy, and optimized for mobile.
 
-**SpendSense** is a web application designed to help you track expenses, monitor income, manage multiple wallets, and visualize your cash flow simply and directly. It is a self-hosted project intended strictly for personal use.
+**SpendSense** is a web application designed to help you track expenses, monitor income, manage multiple wallets, and visualize your cash flow simply and directly. It is a self-hosted project for personal and small-group use.
 
 ## 🛠️ Tech Stack
 
@@ -19,7 +19,8 @@
 ## ✨ Key Features
 
 ### 💳 Core Financial Management
-* 🔒 **Closed System:** Secure authentication with Laravel Breeze & Sanctum. Only the owner can view their data (`user_id` isolation).
+* 🔒 **Closed System:** Secure authentication with Laravel Breeze & Sanctum. Each user can only view their own data (`user_id` isolation).
+* 🧩 **Invite-Gated Signup:** Registration is available at `/register` and requires a valid invite code.
 * 📝 **Transaction Management:** Create, edit, and delete transactions with support for income and expense types.
 * 🏷️ **Smart Categorization:** Custom categories for transactions with flexible organization.
 * 🏪 **Multiple Wallets:** Manage multiple wallets/accounts with individual balances.
@@ -91,29 +92,34 @@ The script will:
    cp .env.example .env
    ```
 
-3. **Install PHP dependencies:**
+3. **Configure registration invite code (optional, defaults to `SpendPauloSense`):**
+   ```bash
+   REGISTRATION_INVITE_CODE=SpendPauloSense
+   ```
+
+4. **Install PHP dependencies:**
    ```bash
    docker run --rm -u "$(id -u):$(id -g)" -v "$(pwd):/var/www/html" -w /var/www/html laravelsail/php83-composer:latest composer install --ignore-platform-reqs
    ```
 
-4. **Start the Docker containers:**
+5. **Start the Docker containers:**
    ```bash
    ./vendor/bin/sail up -d
    ```
 
-5. **Generate the app key and run migrations:**
+6. **Generate the app key and run migrations:**
    ```bash
    ./vendor/bin/sail artisan key:generate
    ./vendor/bin/sail artisan migrate
    ```
 
-6. **Install and build frontend assets:**
+7. **Install and build frontend assets:**
    ```bash
    ./vendor/bin/sail npm install
    ./vendor/bin/sail npm run build
    ```
 
-7. **Access the application:**
+8. **Access the application:**
    - Application: http://localhost
    - Create an account and start managing your finances!
 

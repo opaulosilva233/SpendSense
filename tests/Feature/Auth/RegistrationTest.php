@@ -19,6 +19,7 @@ class RegistrationTest extends TestCase
     public function test_new_users_can_register(): void
     {
         $response = $this->post('/register', [
+            'invite_code' => 'SpendPauloSense',
             'name' => 'Test User',
             'email' => 'test@example.com',
             'password' => 'password',
@@ -27,5 +28,22 @@ class RegistrationTest extends TestCase
 
         $this->assertAuthenticated();
         $response->assertRedirect(route('dashboard', absolute: false));
+    }
+
+    public function test_new_users_cannot_register_with_invalid_invite_code(): void
+    {
+        $response = $this->from('/register')->post('/register', [
+            'invite_code' => 'wrong-code',
+            'name' => 'Test User',
+            'email' => 'test@example.com',
+            'password' => 'password',
+            'password_confirmation' => 'password',
+        ]);
+
+        $response
+            ->assertRedirect('/register')
+            ->assertSessionHasErrors('invite_code');
+
+        $this->assertGuest();
     }
 }

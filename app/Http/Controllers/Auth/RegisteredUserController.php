@@ -31,10 +31,15 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
+        $expectedInviteCode = (string) env('REGISTRATION_INVITE_CODE', 'SpendPauloSense');
+
         $request->validate([
+            'invite_code' => ['required', 'string', 'max:100', 'in:'.$expectedInviteCode],
             'name' => 'required|string|max:255',
             'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+        ], [
+            'invite_code.in' => 'Código de registo inválido.',
         ]);
 
         $user = User::create([
