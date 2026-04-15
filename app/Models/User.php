@@ -86,4 +86,12 @@ class User extends Authenticatable
     {
         return $this->hasMany(Tag::class);
     }
+
+    /**
+     * Get debts and credits for the user.
+     */
+    public function debts(): HasMany
+    {
+        return $this->hasMany(Debt::class);
+    }
 }

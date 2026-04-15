@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\BudgetController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\DebtController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\TransactionController;
@@ -85,6 +86,18 @@ Route::get('/dashboard', function () {
             ];
         });
 
+    $openPayables = $user->debts()
+        ->where('type', 'payable')
+        ->whereIn('status', ['open', 'overdue'])
+        ->selectRaw('COALESCE(SUM(amount - paid_amount), 0) as total')
+        ->value('total');
+
+    $openReceivables = $user->debts()
+        ->where('type', 'receivable')
+        ->whereIn('status', ['open', 'overdue'])
+        ->selectRaw('COALESCE(SUM(amount - paid_amount), 0) as total')
+        ->value('total');
+
     return Inertia::render('Dashboard', [
         'balance' => (float) $balance,
         'monthlyExpenses' => (float) $monthlyExpenses,
@@ -92,6 +105,9 @@ Route::get('/dashboard', function () {
         'recentTransactions' => $recentTransactions,
         'spendingByCategory' => $spendingByCategory,
         'budgets' => $budgets,
+        'openPayables' => (float) $openPayables,
+        'openReceivables' => (float) $openReceivables,
+        'netDebtPosition' => (float) $openReceivables - (float) $openPayables,
     ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 
@@ -107,6 +123,8 @@ Route::middleware('auth')->group(function () {
     Route::resource('wallets', WalletController::class)->only(['index', 'store', 'update', 'destroy']);
     Route::resource('tags', TagController::class)->only(['index', 'store', 'update', 'destroy']);
     Route::resource('budgets', BudgetController::class)->only(['index', 'store', 'update', 'destroy']);
+    Route::resource('debts', DebtController::class)->only(['index', 'store', 'update', 'destroy']);
+    Route::post('debts/{debt}/payments', [DebtController::class, 'addPayment'])->name('debts.payments.store');
 
     // Placeholders for remaining features to avoid route() errors
     Route::get('/goals', function () {

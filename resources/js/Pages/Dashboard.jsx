@@ -2,7 +2,17 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link } from '@inertiajs/react';
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
-export default function Dashboard({ balance, monthlyExpenses, monthlyIncome, recentTransactions, spendingByCategory = [], budgets = [] }) {
+export default function Dashboard({
+    balance,
+    monthlyExpenses,
+    monthlyIncome,
+    recentTransactions,
+    spendingByCategory = [],
+    budgets = [],
+    openPayables = 0,
+    openReceivables = 0,
+    netDebtPosition = 0,
+}) {
     const formatCurrency = (value) => {
         return Number(value).toLocaleString('pt-PT', {
             minimumFractionDigits: 2,
@@ -111,13 +121,39 @@ export default function Dashboard({ balance, monthlyExpenses, monthlyIncome, rec
                     </div>
                 </div>
 
+                <div className="rounded-[2rem] bg-white dark:bg-slate-900/40 p-6 sm:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-200/60 dark:border-white/5 backdrop-blur-xl">
+                    <div className="flex items-center justify-between mb-5">
+                        <h3 className="text-lg font-bold text-slate-800 dark:text-white">Dívidas e Créditos</h3>
+                        <Link
+                            href={route('debts.index')}
+                            className="text-sm font-semibold text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300"
+                        >
+                            Gerir
+                        </Link>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div className="rounded-2xl bg-rose-50 dark:bg-rose-500/10 border border-rose-100 dark:border-rose-500/20 p-4">
+                            <p className="text-xs uppercase tracking-wide font-semibold text-rose-600 dark:text-rose-300">Eu devo</p>
+                            <p className="mt-2 text-2xl font-extrabold text-rose-700 dark:text-rose-200">{formatCurrency(openPayables)}</p>
+                        </div>
+                        <div className="rounded-2xl bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-100 dark:border-emerald-500/20 p-4">
+                            <p className="text-xs uppercase tracking-wide font-semibold text-emerald-600 dark:text-emerald-300">Devem-me</p>
+                            <p className="mt-2 text-2xl font-extrabold text-emerald-700 dark:text-emerald-200">{formatCurrency(openReceivables)}</p>
+                        </div>
+                        <div className="rounded-2xl bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-100 dark:border-indigo-500/20 p-4">
+                            <p className="text-xs uppercase tracking-wide font-semibold text-indigo-600 dark:text-indigo-300">Posição líquida</p>
+                            <p className="mt-2 text-2xl font-extrabold text-indigo-700 dark:text-indigo-200">{formatCurrency(netDebtPosition)}</p>
+                        </div>
+                    </div>
+                </div>
+
                 {/* ── Charts Section ── */}
                 <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
                     {/* Income vs Expenses Bar Chart */}
-                    <div className="rounded-[2rem] bg-white dark:bg-slate-900/40 p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-200/60 dark:border-white/5 backdrop-blur-xl">
+                    <div className="min-w-0 rounded-[2rem] bg-white dark:bg-slate-900/40 p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-200/60 dark:border-white/5 backdrop-blur-xl">
                         <h3 className="text-lg font-bold text-slate-800 dark:text-white mb-8">Evolução Mensal</h3>
-                        <div className="h-72">
-                            <ResponsiveContainer width="100%" height="100%">
+                        <div className="h-72 min-w-0 min-h-[18rem]">
+                            <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={280}>
                                 <BarChart data={barData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
                                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#94a3b8" opacity={0.15} />
                                     <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#64748b', fontSize: 13, fontWeight: 500 }} />
@@ -136,11 +172,11 @@ export default function Dashboard({ balance, monthlyExpenses, monthlyIncome, rec
                     </div>
 
                     {/* Spending by Category Pie Chart */}
-                    <div className="rounded-[2rem] bg-white dark:bg-slate-900/40 p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-200/60 dark:border-white/5 backdrop-blur-xl">
+                    <div className="min-w-0 rounded-[2rem] bg-white dark:bg-slate-900/40 p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-200/60 dark:border-white/5 backdrop-blur-xl">
                         <h3 className="text-lg font-bold text-slate-800 dark:text-white mb-8">Despesas por Categoria</h3>
                         {spendingByCategory.length > 0 ? (
-                            <div className="h-72">
-                                <ResponsiveContainer width="100%" height="100%">
+                            <div className="h-72 min-w-0 min-h-[18rem]">
+                                <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={280}>
                                     <PieChart>
                                         <Pie
                                             data={spendingByCategory}
