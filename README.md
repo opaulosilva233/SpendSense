@@ -155,6 +155,23 @@ Or use Sail directly:
 ./vendor/bin/sail artisan migrate
 ./vendor/bin/sail artisan migrate:rollback
 ./vendor/bin/sail artisan migrate:refresh
+
+# Run scheduler locally (required for recurring transactions automation)
+./vendor/bin/sail artisan schedule:work
+
+# Process recurring transactions manually
+./vendor/bin/sail artisan app:process-recurring
+```
+
+### Recurring Transactions Automation
+
+The project schedules `app:process-recurring` to run daily at `00:05` via Laravel Scheduler.
+
+- **Local development:** run `./vendor/bin/sail artisan schedule:work` in a terminal.
+- **Production:** configure cron to run Laravel scheduler every minute:
+
+```bash
+* * * * * cd /path/to/project && php artisan schedule:run >> /dev/null 2>&1
 ```
 
 ### Stopping the Project
