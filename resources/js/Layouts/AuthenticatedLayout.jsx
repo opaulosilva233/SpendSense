@@ -1,6 +1,15 @@
 import Dropdown from '@/Components/Dropdown';
 import DarkModeToggle from '@/Components/DarkModeToggle';
 import { Link, usePage } from '@inertiajs/react';
+import {
+    ArrowDownUp,
+    BarChart3,
+    CircleDollarSign,
+    HandCoins,
+    House,
+    Tags,
+    Wallet,
+} from 'lucide-react';
 
 export default function AuthenticatedLayout({ header, children }) {
     const user = usePage().props.auth.user;
@@ -10,71 +19,43 @@ export default function AuthenticatedLayout({ header, children }) {
             name: 'Dashboard',
             href: route('dashboard'),
             active: route().current('dashboard'),
-            icon: (
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0a1 1 0 01-1-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 01-1 1h-2z" />
-                </svg>
-            ),
+            icon: <House className="h-6 w-6" strokeWidth={2} />,
         },
         {
             name: 'Transações',
             href: route('transactions.index'),
             active: route().current('transactions.*'),
-            icon: (
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
-                </svg>
-            ),
+            icon: <ArrowDownUp className="h-6 w-6" strokeWidth={2} />,
         },
         {
             name: 'Categorias',
             href: route('categories.index'),
             active: route().current('categories.*'),
-            icon: (
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-                </svg>
-            ),
+            icon: <Tags className="h-6 w-6" strokeWidth={2} />,
         },
         {
             name: 'Carteiras',
             href: route('wallets.index'),
             active: route().current('wallets.*'),
-            icon: (
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-                </svg>
-            ),
+            icon: <Wallet className="h-6 w-6" strokeWidth={2} />,
         },
         {
             name: 'Tags',
             href: route('tags.index'),
             active: route().current('tags.*'),
-            icon: (
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
-                </svg>
-            ),
+            icon: <Tags className="h-6 w-6" strokeWidth={2} />,
         },
         {
             name: 'Orçamentos',
             href: route('budgets.index'),
             active: route().current('budgets.*'),
-            icon: (
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                </svg>
-            ),
+            icon: <BarChart3 className="h-6 w-6" strokeWidth={2} />,
         },
         {
             name: 'Dívidas',
             href: route('debts.index'),
             active: route().current('debts.*'),
-            icon: (
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M17 9V7a5 5 0 00-10 0v2m-2 0h14a2 2 0 012 2v7a2 2 0 01-2 2H5a2 2 0 01-2-2v-7a2 2 0 012-2zm7 4h.01" />
-                </svg>
-            ),
+            icon: <HandCoins className="h-6 w-6" strokeWidth={2} />,
         },
     ];
 
@@ -90,9 +71,7 @@ export default function AuthenticatedLayout({ header, children }) {
                     {/* Logo / Brand */}
                     <div className="flex h-24 items-center gap-4 px-8">
                         <div className="flex items-center justify-center h-10 w-10 rounded-2xl bg-gradient-to-br from-violet-600 to-indigo-600 shadow-lg shadow-indigo-500/30 text-white">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
+                            <CircleDollarSign className="h-6 w-6" strokeWidth={2.5} />
                         </div>
                         <span className="text-xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-600 dark:from-white dark:to-slate-400 tracking-tight">
                             SpendSense
@@ -155,9 +134,7 @@ export default function AuthenticatedLayout({ header, children }) {
                 <div className="sticky top-0 z-30 flex items-center justify-between bg-white/70 dark:bg-slate-900/60 backdrop-blur-2xl px-5 py-4 border-b border-white/20 dark:border-white/10 md:hidden">
                     <div className="flex items-center gap-3">
                         <div className="flex items-center justify-center h-10 w-10 rounded-xl bg-gradient-to-br from-violet-600 to-indigo-600 shadow-md shadow-indigo-500/20 text-white">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
+                            <CircleDollarSign className="h-6 w-6" strokeWidth={2} />
                         </div>
                         <span className="text-xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-600 dark:from-white dark:to-slate-400 tracking-tight">
                             SpendSense
@@ -197,28 +174,29 @@ export default function AuthenticatedLayout({ header, children }) {
                 )}
 
                 {/* Main Content */}
-                <main className="pb-24 md:pb-8">
+                <main className="pb-[calc(5.5rem+env(safe-area-inset-bottom))] md:pb-8">
                     {children}
                 </main>
             </div>
 
             {/* ── Mobile Bottom Navigation Bar (visible only on mobile) ── */}
-            <nav className="fixed inset-x-0 bottom-0 z-40 bg-white/80 dark:bg-slate-900/80 backdrop-blur-2xl border-t border-slate-200/50 dark:border-white/10 md:hidden">
-                <div className="flex items-center justify-around px-2 py-3">
+            <nav className="fixed inset-x-0 bottom-0 z-40 bg-white/80 dark:bg-slate-900/80 backdrop-blur-2xl border-t border-slate-200/50 dark:border-white/10 md:hidden pb-[env(safe-area-inset-bottom)]">
+                <div className="grid grid-cols-4 items-center gap-1 px-2 py-2">
                     {navItems.map((item) => (
                         <Link
                             key={item.name}
                             href={item.href}
-                            className={`flex flex-col items-center gap-1 rounded-xl px-4 py-2 transition-all duration-300 relative ${
+                            className={`flex min-h-[54px] flex-col items-center justify-center gap-0.5 rounded-xl px-1 py-2 transition-all duration-300 relative ${
                                 item.active
                                     ? 'text-indigo-600 dark:text-indigo-400'
                                     : 'text-slate-500 dark:text-slate-400'
                             }`}
+                            title={item.name}
                         >
-                            <span className={`transition-transform duration-300 ${item.active ? 'scale-110' : ''}`}>
+                            <span className={`transition-transform duration-300 ${item.active ? 'scale-110' : ''}`} aria-hidden="true">
                                 {item.icon}
                             </span>
-                            <span className="text-[11px] font-bold tracking-wide">
+                            <span className="text-[10px] font-bold tracking-wide leading-none truncate w-full text-center">
                                 {item.name}
                             </span>
                         </Link>

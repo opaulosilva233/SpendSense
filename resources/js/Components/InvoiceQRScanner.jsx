@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Html5Qrcode } from 'html5-qrcode';
 import Modal from '@/Components/Modal';
+import { X } from 'lucide-react';
 
 export default function InvoiceQRScanner({ show, onClose, onScan }) {
     const [error, setError] = useState(null);
@@ -34,12 +35,14 @@ export default function InvoiceQRScanner({ show, onClose, onScan }) {
                 if (devices && devices.length) {
                     const cameraId = devices.length > 1 ? { facingMode: "environment" } : devices[0].id;
                     
+                    const scanSize = Math.min(window.innerWidth - 120, 260);
+
                     await html5QrCode.current.start(
                         cameraId,
                         {
                             fps: 10,
-                            qrbox: { width: 250, height: 250 },
-                            aspectRatio: 1.0,
+                            qrbox: { width: scanSize, height: scanSize },
+                            aspectRatio: window.innerWidth < 640 ? 1.2 : 1.0,
                         },
                         (decodedText) => {
                             if (decodedText) {
@@ -76,7 +79,7 @@ export default function InvoiceQRScanner({ show, onClose, onScan }) {
 
     return (
         <Modal show={show} onClose={onClose} maxWidth="sm">
-            <div className="p-6 dark:bg-[#0a0a0a]">
+            <div className="p-4 sm:p-6 dark:bg-[#0a0a0a]">
                 <div className="flex items-center justify-between mb-4">
                     <h3 className="text-lg font-semibold text-zinc-900 dark:text-white">
                         Ler QR Code Fatura
@@ -85,9 +88,7 @@ export default function InvoiceQRScanner({ show, onClose, onScan }) {
                         onClick={onClose}
                         className="text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-200"
                     >
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                        </svg>
+                        <X className="h-6 w-6" strokeWidth={2} />
                     </button>
                 </div>
                 
@@ -96,7 +97,7 @@ export default function InvoiceQRScanner({ show, onClose, onScan }) {
                         {error}
                     </div>
                 ) : (
-                    <div className="relative overflow-hidden rounded-2xl bg-black aspect-square">
+                    <div className="relative overflow-hidden rounded-2xl bg-black h-56 sm:h-auto sm:aspect-square">
                         <div id="qr-reader" ref={scannerRef} className="w-full h-full" />
                         <div className="absolute inset-0 border-[6px] border-black/20 pointer-events-none rounded-2xl z-10" />
                     </div>

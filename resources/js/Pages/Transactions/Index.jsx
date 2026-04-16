@@ -6,6 +6,7 @@ import Modal from '@/Components/Modal';
 import InvoiceQRScanner from '@/Components/InvoiceQRScanner';
 import { Head, useForm, Link, router } from '@inertiajs/react';
 import { useState } from 'react';
+import { ArrowDown, ArrowUp, Download, Loader2, Plus, QrCode } from 'lucide-react';
 
 export default function Index({ transactions, categories, wallets, tags, filters = {} }) {
     const [showModal, setShowModal] = useState(false);
@@ -144,11 +145,11 @@ export default function Index({ transactions, categories, wallets, tags, filters
         >
             <Head title="Transações" />
 
-            <div className="mx-auto max-w-7xl px-4 py-8 md:px-8 space-y-6">
+            <div className="mx-auto max-w-7xl px-4 py-6 md:px-8 md:py-8 space-y-6">
                 
                 {/* ── Filters & Actions ── */}
-                <div className="rounded-[2rem] bg-white dark:bg-slate-900/40 p-6 sm:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-200/60 dark:border-white/5 backdrop-blur-xl flex flex-col md:flex-row gap-6 justify-between items-start md:items-end">
-                    <form onSubmit={applyFilters} className="flex flex-col sm:flex-row gap-3 w-full md:w-auto flex-wrap">
+                <div className="rounded-[2rem] bg-white dark:bg-slate-900/40 p-5 sm:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-200/60 dark:border-white/5 backdrop-blur-xl flex flex-col md:flex-row gap-6 justify-between items-start md:items-end">
+                    <form onSubmit={applyFilters} className="grid w-full gap-3 sm:grid-cols-2 xl:grid-cols-4 md:w-auto">
                         <div>
                             <InputLabel htmlFor="filter-category" value="Categoria" className="dark:text-zinc-400" />
                             <select
@@ -185,11 +186,11 @@ export default function Index({ transactions, categories, wallets, tags, filters
                                 className="mt-1 block w-full text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                             />
                         </div>
-                        <div className="flex items-end gap-2">
+                        <div className="flex items-end gap-2 sm:col-span-2 xl:col-span-1">
                             <button
                                 type="submit"
                                 disabled={filterProcessing}
-                                className="h-[38px] px-5 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-sm font-semibold hover:bg-slate-800 dark:hover:bg-slate-100 transition-colors shadow-sm"
+                                className="h-[34px] sm:h-[38px] px-4 sm:px-5 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-sm font-semibold hover:bg-slate-800 dark:hover:bg-slate-100 transition-colors shadow-sm"
                             >
                                 Filtrar
                             </button>
@@ -197,7 +198,7 @@ export default function Index({ transactions, categories, wallets, tags, filters
                                 <button
                                     type="button"
                                     onClick={clearFilters}
-                                    className="h-[38px] px-5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-sm font-semibold hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+                                    className="h-[34px] sm:h-[38px] px-4 sm:px-5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-sm font-semibold hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
                                 >
                                     Limpar
                                 </button>
@@ -207,11 +208,9 @@ export default function Index({ transactions, categories, wallets, tags, filters
 
                     <button
                         onClick={exportCsv}
-                        className="inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 text-sm font-medium rounded-lg border border-slate-200 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors shadow-sm"
+                        className="inline-flex items-center gap-2 self-end md:self-auto px-4 py-2 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 text-sm font-medium rounded-lg border border-slate-200 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors shadow-sm"
                     >
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                        </svg>
+                        <Download className="h-4 w-4" strokeWidth={2} />
                         Exportar CSV
                     </button>
                 </div>
@@ -224,24 +223,20 @@ export default function Index({ transactions, categories, wallets, tags, filters
                                 {transactionList.map((transaction) => (
                                     <li
                                         key={transaction.id}
-                                        className="flex items-center justify-between px-5 py-4 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-700/50 transition-all duration-200 hover:-translate-y-1 hover:shadow-md"
+                                        className="flex items-center justify-between gap-3 px-3 sm:px-5 py-4 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-700/50 transition-all duration-200 hover:-translate-y-1 hover:shadow-md"
                                     >
                                         <div className="flex items-center gap-4 min-w-0">
                                             <div className={`flex items-center justify-center w-10 h-10 rounded-xl shadow-sm ${
                                                 transaction.type === 'income' ? 'bg-gradient-to-br from-emerald-400 to-teal-500 text-white' : 'bg-gradient-to-br from-rose-400 to-red-500 text-white'
                                             }`}>
                                                 {transaction.type === 'income' ? (
-                                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18" />
-                                                    </svg>
+                                                    <ArrowUp className="h-5 w-5" strokeWidth={3} />
                                                 ) : (
-                                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-                                                    </svg>
+                                                    <ArrowDown className="h-5 w-5" strokeWidth={3} />
                                                 )}
                                             </div>
                                             <div className="min-w-0">
-                                                <p className="text-[15px] font-bold text-slate-800 dark:text-white truncate">
+                                                <p className="text-sm sm:text-[15px] font-bold text-slate-800 dark:text-white truncate">
                                                     {transaction.description || 'Sem descrição'}
                                                 </p>
                                                 <div className="flex items-center gap-2 mt-1">
@@ -260,7 +255,7 @@ export default function Index({ transactions, categories, wallets, tags, filters
                                             </div>
                                         </div>
 
-                                        <span className={`text-[15px] font-extrabold whitespace-nowrap ml-3 ${
+                                        <span className={`text-sm sm:text-[15px] font-extrabold whitespace-nowrap ml-1 sm:ml-3 ${
                                             transaction.type === 'income'
                                                 ? 'text-emerald-600 dark:text-emerald-400'
                                                 : 'text-slate-800 dark:text-white'
@@ -274,13 +269,13 @@ export default function Index({ transactions, categories, wallets, tags, filters
 
                             {/* Pagination */}
                             {paginationLinks.length > 3 && (
-                                <div className="flex flex-wrap items-center justify-center gap-1 border-t border-slate-100 dark:border-zinc-800 px-4 py-4">
+                                <div className="flex flex-wrap items-center justify-center gap-0.5 sm:gap-1 border-t border-slate-100 dark:border-zinc-800 px-2 sm:px-4 py-4">
                                     {paginationLinks.map((link, index) => (
                                         <Link
                                             key={index}
                                             href={link.url || '#'}
                                             preserveScroll
-                                            className={`inline-flex h-9 min-w-[36px] items-center justify-center rounded-lg px-3 text-sm font-medium transition-all duration-200 ${
+                                            className={`inline-flex h-8 sm:h-9 min-w-[32px] sm:min-w-[36px] items-center justify-center rounded-lg px-2 sm:px-3 text-xs sm:text-sm font-medium transition-all duration-200 ${
                                                 link.active
                                                     ? 'bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 shadow-sm'
                                                     : link.url
@@ -305,28 +300,24 @@ export default function Index({ transactions, categories, wallets, tags, filters
                 <button
                     onClick={openModal}
                     id="btn-new-transaction"
-                    className="fixed bottom-24 right-5 z-30 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-600 to-indigo-600 text-white shadow-lg shadow-indigo-500/30 transition-all duration-300 hover:scale-105 active:scale-95 md:bottom-10 md:right-10 md:h-auto md:w-auto md:rounded-2xl md:px-6 md:py-4"
+                    className="fixed bottom-[calc(5.5rem+env(safe-area-inset-bottom))] right-4 z-30 flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-600 to-indigo-600 text-white shadow-lg shadow-indigo-500/30 transition-all duration-300 hover:scale-105 active:scale-95 md:bottom-10 md:right-10 md:h-auto md:w-auto md:rounded-2xl md:px-6 md:py-4"
                 >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 md:h-5 md:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-                    </svg>
-                    <span className="hidden md:inline md:ml-3 font-bold text-[15px]">Nova Transação</span>
+                    <Plus className="h-6 w-6 md:h-5 md:w-5" strokeWidth={2.5} />
+                    <span className="hidden md:inline md:ml-3 font-bold text-sm md:text-[15px]">Nova Transação</span>
                 </button>
             </div>
 
             {/* ── Create Transaction Modal ── */}
             <Modal show={showModal} onClose={closeModal} maxWidth="md">
-                <form onSubmit={submit} className="p-6 dark:bg-[#0a0a0a]">
-                    <div className="flex items-center justify-between mb-6">
+                <form onSubmit={submit} className="p-4 sm:p-6 dark:bg-[#0a0a0a]">
+                    <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                         <h3 className="text-lg font-semibold text-zinc-900 dark:text-white">Nova Transação</h3>
                         <button
                             type="button"
                             onClick={() => setShowQRScanner(true)}
-                            className="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-semibold rounded-lg bg-emerald-50 text-emerald-600 hover:bg-emerald-100 dark:bg-emerald-900/20 dark:text-emerald-400 dark:hover:bg-emerald-900/40 transition-colors"
+                            className="inline-flex items-center gap-2 self-start px-3 py-1.5 text-xs font-semibold rounded-lg bg-emerald-50 text-emerald-600 hover:bg-emerald-100 dark:bg-emerald-900/20 dark:text-emerald-400 dark:hover:bg-emerald-900/40 transition-colors"
                         >
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm14 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
-                            </svg>
+                            <QrCode className="h-4 w-4" strokeWidth={2} />
                             Ler QR Code (Fatura)
                         </button>
                     </div>
@@ -348,9 +339,7 @@ export default function Index({ transactions, categories, wallets, tags, filters
                                             : 'border-slate-200 bg-white text-zinc-600 hover:border-slate-300 dark:border-zinc-800 dark:bg-[#0a0a0a] dark:text-zinc-400 dark:hover:border-zinc-700'
                                     }`}
                                 >
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-                                    </svg>
+                                    <ArrowDown className="h-4 w-4" strokeWidth={2} />
                                     Despesa
                                 </button>
                                 <button
@@ -365,9 +354,7 @@ export default function Index({ transactions, categories, wallets, tags, filters
                                             : 'border-slate-200 bg-white text-zinc-600 hover:border-slate-300 dark:border-zinc-800 dark:bg-[#0a0a0a] dark:text-zinc-400 dark:hover:border-zinc-700'
                                     }`}
                                 >
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18" />
-                                    </svg>
+                                    <ArrowUp className="h-5 w-5" strokeWidth={2} />
                                     Receita
                                 </button>
                             </div>
@@ -398,7 +385,7 @@ export default function Index({ transactions, categories, wallets, tags, filters
                                 id="transaction-category"
                                 value={data.category_id}
                                 onChange={(e) => setData('category_id', e.target.value)}
-                                className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-base sm:text-sm"
                             >
                                 <option value="">Selecionar categoria...</option>
                                 {filteredCategories.map((category) => (
@@ -425,7 +412,7 @@ export default function Index({ transactions, categories, wallets, tags, filters
                                 id="transaction-wallet"
                                 value={data.wallet_id}
                                 onChange={(e) => setData('wallet_id', e.target.value)}
-                                className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-base sm:text-sm"
                             >
                                 <option value="">Nenhuma</option>
                                 {wallets && wallets.map((wallet) => (
@@ -448,7 +435,7 @@ export default function Index({ transactions, categories, wallets, tags, filters
                                     const options = Array.from(e.target.options);
                                     setData('tags', options.filter(o => o.selected).map(o => o.value));
                                 }}
-                                className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 min-h-[80px]"
+                                className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 min-h-[64px] sm:min-h-[80px] text-base sm:text-sm"
                             >
                                 {tags && tags.map((tag) => (
                                     <option key={tag.id} value={tag.id}>
@@ -456,7 +443,7 @@ export default function Index({ transactions, categories, wallets, tags, filters
                                     </option>
                                 ))}
                             </select>
-                            <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">Pressione Ctrl/Cmd para selecionar várias tags.</p>
+                            <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">Use Ctrl/Cmd no desktop para selecionar várias tags.</p>
                             <InputError message={errors.tags} className="mt-2" />
                         </div>
 
@@ -507,11 +494,11 @@ export default function Index({ transactions, categories, wallets, tags, filters
                     </div>
 
                     {/* Actions */}
-                    <div className="mt-8 flex items-center justify-end gap-3">
+                    <div className="mt-8 flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-end">
                         <button
                             type="button"
                             onClick={closeModal}
-                            className="rounded-xl px-5 py-3 text-[15px] font-semibold text-slate-500 hover:text-slate-700 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-800 transition-colors"
+                            className="w-full sm:w-auto rounded-xl px-5 py-2.5 sm:py-3 text-sm sm:text-[15px] font-semibold text-slate-500 hover:text-slate-700 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-800 transition-colors"
                         >
                             Cancelar
                         </button>
@@ -519,13 +506,10 @@ export default function Index({ transactions, categories, wallets, tags, filters
                             type="submit"
                             disabled={processing}
                             id="btn-submit-transaction"
-                            className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-br from-violet-600 to-indigo-600 shadow-md shadow-indigo-500/20 px-6 py-3 text-[15px] font-bold text-white transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50"
+                            className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-xl bg-gradient-to-br from-violet-600 to-indigo-600 shadow-md shadow-indigo-500/20 px-6 py-2.5 sm:py-3 text-sm sm:text-[15px] font-bold text-white transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50"
                         >
                             {processing ? (
-                                <svg className="h-4 w-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                                </svg>
+                                <Loader2 className="h-4 w-4 animate-spin" />
                             ) : null}
                             Adicionar Transação
                         </button>

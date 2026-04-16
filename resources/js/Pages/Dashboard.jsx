@@ -1,6 +1,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link } from '@inertiajs/react';
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { ArrowDown, ArrowUp, CirclePlus, PieChart as PieChartIcon, Wallet } from 'lucide-react';
 
 export default function Dashboard({
     balance,
@@ -53,46 +54,40 @@ export default function Dashboard({
         >
             <Head title="Dashboard" />
 
-            <div className="mx-auto max-w-7xl px-4 py-8 md:px-8 space-y-6">
+            <div className="mx-auto max-w-7xl px-4 py-6 md:px-8 md:py-8 space-y-6">
                 
                 {/* ── Bento Grid Top Level ── */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
                     {/* Heroes Card - Saldo */}
-                    <div className="md:col-span-2 rounded-[2rem] bg-gradient-to-br from-violet-600 via-indigo-600 to-indigo-800 p-8 sm:p-10 shadow-xl shadow-indigo-500/20 text-white relative overflow-hidden group">
+                    <div className="sm:col-span-2 rounded-[2rem] bg-gradient-to-br from-violet-600 via-indigo-600 to-indigo-800 p-6 sm:p-10 shadow-xl shadow-indigo-500/20 text-white relative overflow-hidden group">
                         {/* Decorative glow inside card */}
                         <div className="absolute top-0 right-0 -mr-20 -mt-20 w-80 h-80 bg-white/10 blur-3xl rounded-full pointer-events-none transition-transform duration-700 group-hover:scale-110"></div>
                         
                         <div className="absolute bottom-0 right-0 p-8 opacity-[0.08] transition-transform duration-700 group-hover:scale-110 group-hover:-rotate-6 pointer-events-none">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-44 w-44" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-                            </svg>
+                            <Wallet className="h-44 w-44" strokeWidth={1.5} />
                         </div>
                         
                         <div className="relative z-10 flex flex-col h-full justify-between">
                             <div>
-                                <p className="text-indigo-100/80 font-semibold text-lg mb-1 tracking-wide">Saldo Atual</p>
-                                <h2 className="text-5xl sm:text-6xl md:text-7xl font-extrabold tracking-tighter drop-shadow-sm mb-6">
+                                <p className="text-indigo-100/80 font-semibold text-base sm:text-lg mb-1 tracking-wide">Saldo Atual</p>
+                                <h2 className="text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tighter drop-shadow-sm mb-6 break-words">
                                     {formatCurrency(balance)}
                                 </h2>
                             </div>
                             
                             <div className="flex flex-wrap items-center gap-4 mt-6">
-                                <div className="bg-white/10 hover:bg-white/20 transition-colors backdrop-blur-md px-5 py-3 rounded-2xl flex items-center gap-3 border border-white/10">
+                                <div className="bg-white/10 hover:bg-white/20 transition-colors backdrop-blur-md px-4 py-3 rounded-2xl flex items-center gap-3 border border-white/10 w-full sm:w-auto">
                                     <div className="flex items-center justify-center w-8 h-8 rounded-full bg-emerald-400/20 text-emerald-300">
-                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18" />
-                                        </svg>
+                                        <ArrowUp className="h-5 w-5" strokeWidth={2.5} />
                                     </div>
                                     <div>
                                         <p className="text-xs text-indigo-100/70 font-medium">Receitas deste Mês</p>
                                         <p className="font-bold text-white tracking-wide">{formatCurrency(monthlyIncome)}</p>
                                     </div>
                                 </div>
-                                <div className="bg-white/10 hover:bg-white/20 transition-colors backdrop-blur-md px-5 py-3 rounded-2xl flex items-center gap-3 border border-white/10">
+                                <div className="bg-white/10 hover:bg-white/20 transition-colors backdrop-blur-md px-4 py-3 rounded-2xl flex items-center gap-3 border border-white/10 w-full sm:w-auto">
                                     <div className="flex items-center justify-center w-8 h-8 rounded-full bg-rose-400/20 text-rose-300">
-                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-                                        </svg>
+                                        <ArrowDown className="h-5 w-5" strokeWidth={2.5} />
                                     </div>
                                     <div>
                                         <p className="text-xs text-indigo-100/70 font-medium">Despesas deste Mês</p>
@@ -104,11 +99,9 @@ export default function Dashboard({
                     </div>
 
                     {/* Quick Access / CTA */}
-                    <div className="rounded-[2rem] bg-white dark:bg-slate-900/40 p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-200/60 dark:border-white/5 backdrop-blur-xl flex flex-col justify-center items-center text-center group transition-all duration-300 hover:shadow-xl">
+                    <div className="rounded-[2rem] bg-white dark:bg-slate-900/40 p-6 sm:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-200/60 dark:border-white/5 backdrop-blur-xl flex flex-col justify-center items-center text-center group transition-all duration-300 hover:shadow-xl">
                         <div className="w-16 h-16 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-2xl flex items-center justify-center text-white mb-6 shadow-lg shadow-emerald-500/30 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-                            </svg>
+                            <CirclePlus className="h-8 w-8" strokeWidth={2.5} />
                         </div>
                         <h3 className="text-xl font-bold text-slate-800 dark:text-white mb-2">Adicionar Registo</h3>
                         <p className="text-slate-500 dark:text-slate-400 text-sm mb-6">Regista uma nova transação rapidamente para manter as contas em dia.</p>
@@ -150,10 +143,10 @@ export default function Dashboard({
                 {/* ── Charts Section ── */}
                 <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
                     {/* Income vs Expenses Bar Chart */}
-                    <div className="min-w-0 rounded-[2rem] bg-white dark:bg-slate-900/40 p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-200/60 dark:border-white/5 backdrop-blur-xl">
+                    <div className="min-w-0 rounded-[2rem] bg-white dark:bg-slate-900/40 p-5 sm:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-200/60 dark:border-white/5 backdrop-blur-xl">
                         <h3 className="text-lg font-bold text-slate-800 dark:text-white mb-8">Evolução Mensal</h3>
-                        <div className="h-72 min-w-0 min-h-[18rem]">
-                            <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={280}>
+                        <div className="h-56 min-w-0 min-h-[14rem] sm:h-72 sm:min-h-[18rem]">
+                            <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={220}>
                                 <BarChart data={barData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
                                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#94a3b8" opacity={0.15} />
                                     <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#64748b', fontSize: 13, fontWeight: 500 }} />
@@ -172,11 +165,11 @@ export default function Dashboard({
                     </div>
 
                     {/* Spending by Category Pie Chart */}
-                    <div className="min-w-0 rounded-[2rem] bg-white dark:bg-slate-900/40 p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-200/60 dark:border-white/5 backdrop-blur-xl">
+                    <div className="min-w-0 rounded-[2rem] bg-white dark:bg-slate-900/40 p-5 sm:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-200/60 dark:border-white/5 backdrop-blur-xl">
                         <h3 className="text-lg font-bold text-slate-800 dark:text-white mb-8">Despesas por Categoria</h3>
                         {spendingByCategory.length > 0 ? (
-                            <div className="h-72 min-w-0 min-h-[18rem]">
-                                <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={280}>
+                            <div className="h-56 min-w-0 min-h-[14rem] sm:h-72 sm:min-h-[18rem]">
+                                <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={220}>
                                     <PieChart>
                                         <Pie
                                             data={spendingByCategory}
@@ -206,11 +199,8 @@ export default function Dashboard({
                                 </ResponsiveContainer>
                             </div>
                         ) : (
-                            <div className="flex h-72 flex-col items-center justify-center text-slate-400 dark:text-gray-500">
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mb-3 text-slate-300 dark:text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" />
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" />
-                                </svg>
+                            <div className="flex h-56 sm:h-72 flex-col items-center justify-center text-slate-400 dark:text-gray-500">
+                                <PieChartIcon className="mb-3 h-12 w-12 text-slate-300 dark:text-gray-600" strokeWidth={1.5} />
                                 <p className="text-sm font-medium">Sem dados de despesas neste mês</p>
                             </div>
                         )}
@@ -218,15 +208,15 @@ export default function Dashboard({
                 </div>
 
                 {/* ── Budgets Progress ── */}
-                <div className="mt-8 rounded-[2rem] bg-white dark:bg-slate-900/40 p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-200/60 dark:border-white/5 backdrop-blur-xl">
+                <div className="mt-8 rounded-[2rem] bg-white dark:bg-slate-900/40 p-5 sm:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-200/60 dark:border-white/5 backdrop-blur-xl">
                     <h3 className="text-lg font-bold text-slate-800 dark:text-white mb-6">Orçamentos Ativos</h3>
                     {budgets.length > 0 ? (
                         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
                             {budgets.map(budget => (
                                 <div key={budget.id} className="rounded-2xl bg-slate-50 dark:bg-slate-800/50 p-6 border border-slate-100 dark:border-slate-700/50">
-                                    <div className="flex justify-between items-center mb-4">
-                                        <span className="text-[15px] font-bold text-slate-800 dark:text-white">{budget.category_name}</span>
-                                        <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 bg-slate-200 dark:bg-slate-700 px-2 py-1 rounded-full">
+                                    <div className="flex flex-wrap justify-between items-center gap-2 mb-4">
+                                        <span className="text-sm sm:text-[15px] font-bold text-slate-800 dark:text-white">{budget.category_name}</span>
+                                        <span className="text-[11px] sm:text-xs font-semibold text-slate-500 dark:text-slate-400 bg-slate-200 dark:bg-slate-700 px-2 py-1 rounded-full whitespace-nowrap">
                                             {formatCurrency(budget.spent)} / {formatCurrency(budget.amount)}
                                         </span>
                                     </div>
@@ -248,13 +238,13 @@ export default function Dashboard({
                         </div>
                     ) : (
                         <div className="rounded-2xl bg-slate-50 dark:bg-slate-800/30 p-8 text-center border border-slate-100 dark:border-slate-700/50">
-                            <p className="text-slate-500 dark:text-slate-400 text-[15px] font-medium">Nenhum orçamento definido para este mês.</p>
+                            <p className="text-slate-500 dark:text-slate-400 text-sm sm:text-[15px] font-medium">Nenhum orçamento definido para este mês.</p>
                         </div>
                     )}
                 </div>
 
                 {/* ── Recent Transactions ── */}
-                <div className="mt-8 rounded-[2rem] bg-white dark:bg-slate-900/40 p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-200/60 dark:border-white/5 backdrop-blur-xl">
+                <div className="mt-8 rounded-[2rem] bg-white dark:bg-slate-900/40 p-5 sm:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-200/60 dark:border-white/5 backdrop-blur-xl">
                     <div className="flex items-center justify-between mb-8">
                         <h3 className="text-lg font-bold text-slate-800 dark:text-white">Transações Recentes</h3>
                         <Link
@@ -271,24 +261,20 @@ export default function Dashboard({
                                 {recentTransactions.map((transaction) => (
                                     <li
                                         key={transaction.id}
-                                        className="flex items-center justify-between px-5 py-4 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-700/50 transition-all duration-200 hover:-translate-y-1 hover:shadow-md"
+                                        className="flex items-center justify-between gap-3 px-3 sm:px-5 py-4 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-700/50 transition-all duration-200 hover:-translate-y-1 hover:shadow-md"
                                     >
                                         <div className="flex items-center gap-4 min-w-0">
                                             <div className={`flex items-center justify-center w-10 h-10 rounded-xl shadow-sm ${
                                                 transaction.type === 'income' ? 'bg-gradient-to-br from-emerald-400 to-teal-500 text-white' : 'bg-gradient-to-br from-rose-400 to-red-500 text-white'
                                             }`}>
                                                 {transaction.type === 'income' ? (
-                                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18" />
-                                                    </svg>
+                                                    <ArrowUp className="h-5 w-5" strokeWidth={3} />
                                                 ) : (
-                                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-                                                    </svg>
+                                                    <ArrowDown className="h-5 w-5" strokeWidth={3} />
                                                 )}
                                             </div>
                                             <div className="min-w-0">
-                                                <p className="text-[15px] font-bold text-slate-800 dark:text-white truncate">
+                                                <p className="text-sm sm:text-[15px] font-bold text-slate-800 dark:text-white truncate">
                                                     {transaction.description || 'Sem descrição'}
                                                 </p>
                                                 <div className="flex items-center gap-2 mt-1">
@@ -307,7 +293,7 @@ export default function Dashboard({
                                             </div>
                                         </div>
 
-                                        <span className={`text-[15px] font-extrabold whitespace-nowrap ml-3 ${
+                                        <span className={`text-sm sm:text-[15px] font-extrabold whitespace-nowrap ml-1 sm:ml-3 ${
                                             transaction.type === 'income'
                                                 ? 'text-emerald-600 dark:text-emerald-400'
                                                 : 'text-slate-800 dark:text-white'

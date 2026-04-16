@@ -5,6 +5,7 @@ import TextInput from '@/Components/TextInput';
 import Modal from '@/Components/Modal';
 import { Head, useForm, Link, router } from '@inertiajs/react';
 import { useState } from 'react';
+import { Plus } from 'lucide-react';
 
 export default function Index({ debts, filters = {}, summary }) {
     const [showDebtModal, setShowDebtModal] = useState(false);
@@ -175,11 +176,9 @@ export default function Index({ debts, filters = {}, summary }) {
                     <h2 className="text-xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">Dívidas e Créditos</h2>
                     <button
                         onClick={openCreateModal}
-                        className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-br from-violet-600 to-indigo-600 shadow-md shadow-indigo-500/20 px-5 py-2.5 text-[15px] font-bold text-white transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
+                        className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-br from-violet-600 to-indigo-600 shadow-md shadow-indigo-500/20 px-4 sm:px-5 py-2.5 text-sm sm:text-[15px] font-bold text-white transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
                     >
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-                        </svg>
+                        <Plus className="h-5 w-5" strokeWidth={2.5} />
                         Novo Registo
                     </button>
                 </div>
@@ -188,7 +187,7 @@ export default function Index({ debts, filters = {}, summary }) {
             <Head title="Dívidas e Créditos" />
 
             <div className="mx-auto max-w-7xl px-4 py-8 md:px-8 space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     <div className="rounded-3xl bg-white dark:bg-slate-900/40 p-6 border border-slate-200/60 dark:border-white/5 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
                         <p className="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400 font-semibold">Eu Devo</p>
                         <p className="mt-2 text-3xl font-extrabold text-rose-600 dark:text-rose-400">{formatCurrency(summary.open_payables)}</p>
@@ -254,7 +253,7 @@ export default function Index({ debts, filters = {}, summary }) {
                             <button
                                 type="submit"
                                 disabled={filterProcessing}
-                                className="h-[38px] px-5 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-sm font-semibold hover:bg-slate-800 dark:hover:bg-slate-100 transition-colors shadow-sm"
+                                className="h-[34px] sm:h-[38px] px-4 sm:px-5 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-sm font-semibold hover:bg-slate-800 dark:hover:bg-slate-100 transition-colors shadow-sm"
                             >
                                 Filtrar
                             </button>
@@ -262,7 +261,7 @@ export default function Index({ debts, filters = {}, summary }) {
                                 <button
                                     type="button"
                                     onClick={clearFilters}
-                                    className="h-[38px] px-5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-sm font-semibold hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+                                    className="h-[34px] sm:h-[38px] px-4 sm:px-5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-sm font-semibold hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
                                 >
                                     Limpar
                                 </button>
@@ -376,13 +375,13 @@ export default function Index({ debts, filters = {}, summary }) {
                             </div>
 
                             {paginationLinks.length > 3 && (
-                                <div className="mt-6 flex flex-wrap items-center justify-center gap-1 border-t border-slate-100 dark:border-zinc-800 pt-5">
+                                <div className="mt-6 flex flex-wrap items-center justify-center gap-0.5 sm:gap-1 border-t border-slate-100 dark:border-zinc-800 pt-5">
                                     {paginationLinks.map((link, index) => (
                                         <Link
                                             key={index}
                                             href={link.url || '#'}
                                             preserveScroll
-                                            className={`inline-flex h-9 min-w-[36px] items-center justify-center rounded-lg px-3 text-sm font-medium transition-all duration-200 ${
+                                            className={`inline-flex h-8 sm:h-9 min-w-[32px] sm:min-w-[36px] items-center justify-center rounded-lg px-2 sm:px-3 text-xs sm:text-sm font-medium transition-all duration-200 ${
                                                 link.active
                                                     ? 'bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 shadow-sm'
                                                     : link.url
@@ -405,7 +404,7 @@ export default function Index({ debts, filters = {}, summary }) {
             </div>
 
             <Modal show={showDebtModal} onClose={closeDebtModal} maxWidth="md">
-                <form onSubmit={submitDebt} className="p-6 dark:bg-[#0a0a0a]">
+                <form onSubmit={submitDebt} className="p-4 sm:p-6 dark:bg-[#0a0a0a]">
                     <h3 className="text-lg font-semibold text-zinc-900 dark:text-white mb-6">
                         {editingDebt ? 'Editar Registo' : 'Novo Registo de Dívida/Crédito'}
                     </h3>
@@ -468,7 +467,7 @@ export default function Index({ debts, filters = {}, summary }) {
                             <InputError message={errors.amount} className="mt-2" />
                         </div>
 
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
                                 <InputLabel htmlFor="debt-issue-date" value="Data de Emissão" />
                                 <TextInput
@@ -507,18 +506,18 @@ export default function Index({ debts, filters = {}, summary }) {
                         </div>
                     </div>
 
-                    <div className="mt-8 flex items-center justify-end gap-3">
+                    <div className="mt-8 flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-end">
                         <button
                             type="button"
                             onClick={closeDebtModal}
-                            className="rounded-xl px-5 py-3 text-[15px] font-semibold text-slate-500 hover:text-slate-700 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-800 transition-colors"
+                            className="w-full sm:w-auto rounded-xl px-5 py-2.5 sm:py-3 text-sm sm:text-[15px] font-semibold text-slate-500 hover:text-slate-700 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-800 transition-colors"
                         >
                             Cancelar
                         </button>
                         <button
                             type="submit"
                             disabled={processing}
-                            className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-br from-violet-600 to-indigo-600 shadow-md shadow-indigo-500/20 px-6 py-3 text-[15px] font-bold text-white transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50"
+                            className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-xl bg-gradient-to-br from-violet-600 to-indigo-600 shadow-md shadow-indigo-500/20 px-6 py-2.5 sm:py-3 text-sm sm:text-[15px] font-bold text-white transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50"
                         >
                             {editingDebt ? 'Guardar Alterações' : 'Criar Registo'}
                         </button>
@@ -527,7 +526,7 @@ export default function Index({ debts, filters = {}, summary }) {
             </Modal>
 
             <Modal show={showPaymentModal} onClose={closePaymentModal} maxWidth="md">
-                <form onSubmit={submitPayment} className="p-6 dark:bg-[#0a0a0a]">
+                <form onSubmit={submitPayment} className="p-4 sm:p-6 dark:bg-[#0a0a0a]">
                     <h3 className="text-lg font-semibold text-zinc-900 dark:text-white mb-2">Registar Liquidação</h3>
                     {selectedDebt && (
                         <p className="text-sm text-slate-500 dark:text-slate-400 mb-6">
@@ -577,18 +576,18 @@ export default function Index({ debts, filters = {}, summary }) {
                         </div>
                     </div>
 
-                    <div className="mt-8 flex items-center justify-end gap-3">
+                    <div className="mt-8 flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-end">
                         <button
                             type="button"
                             onClick={closePaymentModal}
-                            className="rounded-xl px-5 py-3 text-[15px] font-semibold text-slate-500 hover:text-slate-700 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-800 transition-colors"
+                            className="w-full sm:w-auto rounded-xl px-5 py-2.5 sm:py-3 text-sm sm:text-[15px] font-semibold text-slate-500 hover:text-slate-700 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-800 transition-colors"
                         >
                             Cancelar
                         </button>
                         <button
                             type="submit"
                             disabled={paymentProcessing}
-                            className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 shadow-md shadow-emerald-500/20 px-6 py-3 text-[15px] font-bold text-white transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50"
+                            className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 shadow-md shadow-emerald-500/20 px-6 py-2.5 sm:py-3 text-sm sm:text-[15px] font-bold text-white transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50"
                         >
                             Confirmar Liquidação
                         </button>

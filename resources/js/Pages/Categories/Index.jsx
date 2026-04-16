@@ -5,6 +5,115 @@ import TextInput from '@/Components/TextInput';
 import Modal from '@/Components/Modal';
 import { Head, useForm, router } from '@inertiajs/react';
 import { useState } from 'react';
+import {
+    ArrowDown,
+    ArrowUp,
+    Briefcase,
+    Car,
+    ChartColumn,
+    Gamepad2,
+    GraduationCap,
+    HeartPulse,
+    Home,
+    Laptop,
+    Loader2,
+    Pencil,
+    Plus,
+    ShoppingBag,
+    Tag,
+    Trash2,
+    Trophy,
+    UserRound,
+    Utensils,
+    Wallet,
+    Zap,
+} from 'lucide-react';
+
+const ICON_OPTIONS = [
+    { value: 'tag', label: 'Etiqueta' },
+    { value: 'food', label: 'Talheres' },
+    { value: 'car', label: 'Carro' },
+    { value: 'home', label: 'Casa' },
+    { value: 'health', label: 'Saude' },
+    { value: 'education', label: 'Educacao' },
+    { value: 'entertainment', label: 'Entretenimento' },
+    { value: 'shopping', label: 'Compras' },
+    { value: 'utilities', label: 'Utilidades' },
+    { value: 'personal', label: 'Pessoal' },
+    { value: 'briefcase', label: 'Trabalho' },
+    { value: 'laptop', label: 'Freelance' },
+    { value: 'chart', label: 'Investimentos' },
+    { value: 'trophy', label: 'Bonus' },
+    { value: 'cash', label: 'Dinheiro' },
+];
+
+const LEGACY_ICON_MAP = {
+    '🍽️': 'food',
+    '🚗': 'car',
+    '🏠': 'home',
+    '🩺': 'health',
+    '🎓': 'education',
+    '🎮': 'entertainment',
+    '👗': 'shopping',
+    '⚡': 'utilities',
+    '🧖': 'personal',
+    '❓': 'tag',
+    '👨‍💼': 'briefcase',
+    '💻': 'laptop',
+    '📊': 'chart',
+    '🏆': 'trophy',
+    '💵': 'cash',
+};
+
+const hasIconOption = (icon) => ICON_OPTIONS.some((option) => option.value === icon);
+
+const normalizeIcon = (icon, type) => {
+    if (hasIconOption(icon)) {
+        return icon;
+    }
+
+    if (icon && LEGACY_ICON_MAP[icon]) {
+        return LEGACY_ICON_MAP[icon];
+    }
+
+    return type === 'income' ? 'cash' : 'tag';
+};
+
+const getCategoryIcon = (icon) => {
+    switch (icon) {
+        case 'food':
+            return Utensils;
+        case 'car':
+            return Car;
+        case 'home':
+            return Home;
+        case 'health':
+            return HeartPulse;
+        case 'education':
+            return GraduationCap;
+        case 'entertainment':
+            return Gamepad2;
+        case 'shopping':
+            return ShoppingBag;
+        case 'utilities':
+            return Zap;
+        case 'personal':
+            return UserRound;
+        case 'briefcase':
+            return Briefcase;
+        case 'laptop':
+            return Laptop;
+        case 'chart':
+            return ChartColumn;
+        case 'trophy':
+            return Trophy;
+        case 'cash':
+            return Wallet;
+        case 'tag':
+        default:
+            return Tag;
+    }
+};
 
 export default function Index({ categories }) {
     const [showModal, setShowModal] = useState(false);
@@ -13,6 +122,8 @@ export default function Index({ categories }) {
     const { data, setData, post, put, processing, errors, reset } = useForm({
         name: '',
         type: 'expense',
+        color: '#6366F1',
+        icon: 'tag',
     });
 
     const openCreateModal = () => {
@@ -26,6 +137,8 @@ export default function Index({ categories }) {
         setData({
             name: category.name,
             type: category.type,
+            color: category.color || '#6366F1',
+            icon: normalizeIcon(category.icon, category.type),
         });
         setShowModal(true);
     };
@@ -66,11 +179,9 @@ export default function Index({ categories }) {
                     <button
                         onClick={openCreateModal}
                         id="btn-new-category"
-                        className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-br from-violet-600 to-indigo-600 shadow-md shadow-indigo-500/20 px-5 py-2.5 text-[15px] font-bold text-white transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
+                        className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-br from-violet-600 to-indigo-600 shadow-md shadow-indigo-500/20 px-4 sm:px-5 py-2.5 text-sm sm:text-[15px] font-bold text-white transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
                     >
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-                        </svg>
+                        <Plus className="h-5 w-5" strokeWidth={2.5} />
                         Nova Categoria
                     </button>
                 </div>
@@ -83,9 +194,7 @@ export default function Index({ categories }) {
                 <div className="rounded-[2rem] bg-white dark:bg-slate-900/40 p-6 sm:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-200/60 dark:border-white/5 backdrop-blur-xl">
                     <h3 className="text-lg font-bold text-slate-800 dark:text-white mb-6 flex items-center gap-3">
                         <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-rose-400 to-red-500 text-white shadow-sm">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-                            </svg>
+                            <ArrowDown className="h-5 w-5" strokeWidth={2.5} />
                         </span>
                         Despesas
                         <span className="text-xs font-semibold text-slate-500 bg-slate-100 dark:bg-slate-800 dark:text-slate-400 px-2 py-1 rounded-full">{expenseCategories.length}</span>
@@ -93,39 +202,44 @@ export default function Index({ categories }) {
 
                     {expenseCategories.length > 0 ? (
                         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                            {expenseCategories.map((category) => (
+                            {expenseCategories.map((category) => {
+                                const resolvedIcon = normalizeIcon(category.icon, category.type);
+                                const CategoryIcon = getCategoryIcon(resolvedIcon);
+
+                                return (
                                 <div
                                     key={category.id}
                                     className="group flex items-center justify-between rounded-2xl bg-slate-50 dark:bg-slate-800/40 p-5 border border-slate-100 dark:border-slate-700/50 transition-all duration-200 hover:-translate-y-1 hover:shadow-md"
                                 >
                                     <div className="flex items-center gap-4">
-                                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white dark:bg-slate-700 shadow-sm text-slate-600 dark:text-white border border-slate-200/50 dark:border-slate-600">
-                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                                <path strokeLinecap="round" strokeLinejoin="round" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-                                            </svg>
+                                        <div
+                                            className="flex h-10 w-10 items-center justify-center rounded-xl shadow-sm border"
+                                            style={{
+                                                backgroundColor: category.color || '#ffffff',
+                                                borderColor: category.color || '#e2e8f0',
+                                            }}
+                                        >
+                                            <CategoryIcon className="h-5 w-5 text-white" strokeWidth={2} />
                                         </div>
-                                        <span className="text-[15px] font-bold text-slate-900 dark:text-white">{category.name}</span>
+                                        <span className="text-sm sm:text-[15px] font-bold text-slate-900 dark:text-white">{category.name}</span>
                                     </div>
-                                    <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                                    <div className="flex items-center gap-1 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-200">
                                         <button
                                             onClick={() => openEditModal(category)}
                                             className="rounded-lg p-2 text-slate-400 hover:bg-white hover:shadow-sm dark:hover:bg-slate-700 dark:hover:text-white transition-all"
                                         >
-                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                                                <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                            </svg>
+                                            <Pencil className="h-4 w-4" strokeWidth={2.5} />
                                         </button>
                                         <button
                                             onClick={() => deleteCategory(category.id)}
                                             className="rounded-lg p-2 text-slate-400 hover:bg-rose-50 hover:shadow-sm hover:text-rose-600 dark:hover:bg-rose-500/10 dark:hover:text-rose-400 transition-all"
                                         >
-                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                                                <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                            </svg>
+                                            <Trash2 className="h-4 w-4" strokeWidth={2.5} />
                                         </button>
                                     </div>
                                 </div>
-                            ))}
+                                );
+                            })}
                         </div>
                     ) : (
                         <div className="rounded-2xl bg-slate-50 dark:bg-slate-800/30 p-8 text-center border border-slate-100 dark:border-slate-700/50">
@@ -138,9 +252,7 @@ export default function Index({ categories }) {
                 <div className="rounded-[2rem] bg-white dark:bg-slate-900/40 p-6 sm:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-200/60 dark:border-white/5 backdrop-blur-xl">
                     <h3 className="text-lg font-bold text-slate-800 dark:text-white mb-6 flex items-center gap-3">
                         <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-400 to-teal-500 text-white shadow-sm">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18" />
-                            </svg>
+                            <ArrowUp className="h-5 w-5" strokeWidth={2.5} />
                         </span>
                         Receitas
                         <span className="text-xs font-semibold text-slate-500 bg-slate-100 dark:bg-slate-800 dark:text-slate-400 px-2 py-1 rounded-full">{incomeCategories.length}</span>
@@ -148,39 +260,44 @@ export default function Index({ categories }) {
 
                     {incomeCategories.length > 0 ? (
                         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                            {incomeCategories.map((category) => (
+                            {incomeCategories.map((category) => {
+                                const resolvedIcon = normalizeIcon(category.icon, category.type);
+                                const CategoryIcon = getCategoryIcon(resolvedIcon);
+
+                                return (
                                 <div
                                     key={category.id}
                                     className="group flex items-center justify-between rounded-2xl bg-slate-50 dark:bg-slate-800/40 p-5 border border-slate-100 dark:border-slate-700/50 transition-all duration-200 hover:-translate-y-1 hover:shadow-md"
                                 >
                                     <div className="flex items-center gap-4">
-                                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white dark:bg-slate-700 shadow-sm text-slate-600 dark:text-white border border-slate-200/50 dark:border-slate-600">
-                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                                <path strokeLinecap="round" strokeLinejoin="round" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-                                            </svg>
+                                        <div
+                                            className="flex h-10 w-10 items-center justify-center rounded-xl shadow-sm border"
+                                            style={{
+                                                backgroundColor: category.color || '#ffffff',
+                                                borderColor: category.color || '#e2e8f0',
+                                            }}
+                                        >
+                                            <CategoryIcon className="h-5 w-5 text-white" strokeWidth={2} />
                                         </div>
-                                        <span className="text-[15px] font-bold text-slate-900 dark:text-white">{category.name}</span>
+                                        <span className="text-sm sm:text-[15px] font-bold text-slate-900 dark:text-white">{category.name}</span>
                                     </div>
-                                    <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                                    <div className="flex items-center gap-1 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-200">
                                         <button
                                             onClick={() => openEditModal(category)}
                                             className="rounded-lg p-2 text-slate-400 hover:bg-white hover:shadow-sm dark:hover:bg-slate-700 dark:hover:text-white transition-all"
                                         >
-                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                                                <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                            </svg>
+                                            <Pencil className="h-4 w-4" strokeWidth={2.5} />
                                         </button>
                                         <button
                                             onClick={() => deleteCategory(category.id)}
                                             className="rounded-lg p-2 text-slate-400 hover:bg-rose-50 hover:shadow-sm hover:text-rose-600 dark:hover:bg-rose-500/10 dark:hover:text-rose-400 transition-all"
                                         >
-                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                                                <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                            </svg>
+                                            <Trash2 className="h-4 w-4" strokeWidth={2.5} />
                                         </button>
                                     </div>
                                 </div>
-                            ))}
+                                );
+                            })}
                         </div>
                     ) : (
                         <div className="rounded-2xl bg-slate-50 dark:bg-slate-800/30 p-8 text-center border border-slate-100 dark:border-slate-700/50">
@@ -192,7 +309,7 @@ export default function Index({ categories }) {
 
             {/* ── Create / Edit Modal ── */}
             <Modal show={showModal} onClose={closeModal} maxWidth="md">
-                <form onSubmit={submit} className="p-6 dark:bg-[#0a0a0a]">
+                <form onSubmit={submit} className="p-4 sm:p-6 dark:bg-[#0a0a0a]">
                     <h3 className="text-lg font-semibold text-zinc-900 dark:text-white mb-6">
                         {editingCategory ? 'Editar Categoria' : 'Nova Categoria'}
                     </h3>
@@ -225,9 +342,7 @@ export default function Index({ categories }) {
                                             : 'border-slate-200 bg-white text-zinc-600 hover:border-slate-300 dark:border-zinc-800 dark:bg-[#0a0a0a] dark:text-zinc-400 dark:hover:border-zinc-700'
                                     }`}
                                 >
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-                                    </svg>
+                                    <ArrowDown className="h-4 w-4" strokeWidth={2} />
                                     Despesa
                                 </button>
                                 <button
@@ -239,22 +354,65 @@ export default function Index({ categories }) {
                                             : 'border-slate-200 bg-white text-zinc-600 hover:border-slate-300 dark:border-zinc-800 dark:bg-[#0a0a0a] dark:text-zinc-400 dark:hover:border-zinc-700'
                                     }`}
                                 >
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18" />
-                                    </svg>
+                                    <ArrowUp className="h-4 w-4" strokeWidth={2} />
                                     Receita
                                 </button>
                             </div>
                             <InputError message={errors.type} className="mt-2" />
                         </div>
+
+                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                            <div>
+                                <InputLabel htmlFor="category-icon" value="Ícone" />
+                                <select
+                                    id="category-icon"
+                                    value={data.icon}
+                                    onChange={(e) => setData('icon', e.target.value)}
+                                    className="mt-1 block w-full rounded-md border-slate-300 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100 focus:border-indigo-500 focus:ring-indigo-500"
+                                >
+                                    {ICON_OPTIONS.map((option) => (
+                                        <option key={option.value} value={option.value}>
+                                            {option.label}
+                                        </option>
+                                    ))}
+                                </select>
+                                <div className="mt-2 inline-flex h-10 w-10 items-center justify-center rounded-xl border shadow-sm" style={{ backgroundColor: data.color || '#6366F1', borderColor: data.color || '#6366F1' }}>
+                                    {(() => {
+                                        const CategoryIcon = getCategoryIcon(normalizeIcon(data.icon, data.type));
+                                        return <CategoryIcon className="h-5 w-5 text-white" strokeWidth={2} />;
+                                    })()}
+                                </div>
+                                <InputError message={errors.icon} className="mt-2" />
+                            </div>
+
+                            <div>
+                                <InputLabel htmlFor="category-color" value="Cor" />
+                                <div className="mt-1 flex items-center gap-3">
+                                    <input
+                                        id="category-color"
+                                        type="color"
+                                        value={data.color || '#6366F1'}
+                                        onChange={(e) => setData('color', e.target.value)}
+                                        className="h-10 w-14 cursor-pointer rounded-md border border-slate-300 bg-white p-1 dark:border-zinc-700 dark:bg-zinc-900"
+                                    />
+                                    <TextInput
+                                        value={data.color}
+                                        onChange={(e) => setData('color', e.target.value)}
+                                        className="block w-full"
+                                        placeholder="#6366F1"
+                                    />
+                                </div>
+                                <InputError message={errors.color} className="mt-2" />
+                            </div>
+                        </div>
                     </div>
 
                     {/* Actions */}
-                    <div className="mt-8 flex items-center justify-end gap-3">
+                    <div className="mt-8 flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-end">
                         <button
                             type="button"
                             onClick={closeModal}
-                            className="rounded-xl px-5 py-3 text-[15px] font-semibold text-slate-500 hover:text-slate-700 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-800 transition-colors"
+                            className="w-full sm:w-auto rounded-xl px-5 py-2.5 sm:py-3 text-sm sm:text-[15px] font-semibold text-slate-500 hover:text-slate-700 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-800 transition-colors"
                         >
                             Cancelar
                         </button>
@@ -262,13 +420,10 @@ export default function Index({ categories }) {
                             type="submit"
                             disabled={processing}
                             id="btn-submit-category"
-                            className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-br from-violet-600 to-indigo-600 shadow-md shadow-indigo-500/20 px-6 py-3 text-[15px] font-bold text-white transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50"
+                            className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-xl bg-gradient-to-br from-violet-600 to-indigo-600 shadow-md shadow-indigo-500/20 px-6 py-2.5 sm:py-3 text-sm sm:text-[15px] font-bold text-white transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50"
                         >
                             {processing ? (
-                                <svg className="h-4 w-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                                </svg>
+                                <Loader2 className="h-4 w-4 animate-spin" />
                             ) : null}
                             {editingCategory ? 'Guardar Alterações' : 'Criar Categoria'}
                         </button>
