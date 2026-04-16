@@ -10,7 +10,7 @@
 * **Frontend:** React 18.2
 * **Integration:** Inertia.js (SPA without the need for an external API)
 * **Styling:** Tailwind CSS 3.2
-* **Database:** PostgreSQL
+* **Database:** MySQL
 * **Visualizations:** Recharts 3.8.1
 * **QR Code Scanner:** html5-qrcode 2.3.8
 * **Infrastructure:** Docker (Laravel Sail)
@@ -58,7 +58,7 @@
 - **Docker** and **Docker Compose** installed
 - Git (for cloning the repository)
 
-No need to install PHP, Node.js, or PostgreSQL locally — everything runs in Docker containers!
+No need to install PHP, Node.js, or MySQL locally — everything runs in Docker containers!
 
 ### Quick Setup (Automated)
 

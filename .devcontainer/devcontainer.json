@@ -6,8 +6,8 @@
 	// Update the 'dockerComposeFile' list if you have more compose files or use different names.
 	// The .devcontainer/docker-compose.yml file contains any overrides you need/want to make.
 	"dockerComposeFile": [
-		"../compose.yaml",
-		"../docker-compose.yml"
+		"../docker-compose.yml",
+		"docker-compose.yml"
 	],
 
 	// The 'service' property is the name of the service for the container that VS Code should
@@ -17,9 +17,14 @@
 	// The optional 'workspaceFolder' property is the path VS Code should open by default when
 	// connected. This is typically a file mount in .devcontainer/docker-compose.yml
 	"workspaceFolder": "/var/www/html",
-	"runServices": ["app","db"],
+	"runServices": ["app", "db", "web", "node"],
 	"shutdownAction": "stopCompose",
-	"remoteUser": "developer"
+	"remoteUser": "root",
+	"features": {
+		"ghcr.io/devcontainers/features/docker-outside-of-docker:1": {
+			"moby": "false"
+		}
+	}
 
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	// "features": {},

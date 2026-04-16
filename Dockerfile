@@ -1,6 +1,7 @@
 FROM php:8.3-fpm
 
 RUN apt-get update && apt-get install -y \
+    --no-install-recommends \
     git \
     unzip \
     libzip-dev \
@@ -12,7 +13,7 @@ RUN apt-get update && apt-get install -y \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
-RUN docker-php-ext-install pdo pdo_mysql zip exif pcntl bcmath
+RUN docker-php-ext-install pdo pdo_mysql zip exif pcntl bcmath intl opcache
 
 # Install composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
